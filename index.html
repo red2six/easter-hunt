@@ -183,7 +183,7 @@
   }
   .btn:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
   .btn-orange { background: #c45f00; color: white; border-color: #FF8C00; }
-  .btn-green { background: #14532d; color: #86efac; border-color: #4ADE80; box-shadow: 0 0 10px rgba(74,222,128,0.35); }
+  .btn-green { background: #166534; color: #ffffff; border-color: #4ADE80; box-shadow: 0 0 14px rgba(74,222,128,0.55); font-weight:700; }
   .btn-blue { background: #1e3a5f; color: #60A5FA; border-color: #60A5FA; }
   .btn-pink { background: #5a1a35; color: #FF6B9D; border-color: #FF6B9D; }
   .btn-purple { background: #3b1f5c; color: #C084FC; border-color: #C084FC; }
@@ -346,7 +346,7 @@
 
   .clue-number-badge {
     font-family: 'Comic Neue', cursive; font-weight: 700;
-    font-size: 1.05rem;
+    font-size: 1.31rem;
     letter-spacing: 1px;
     color: var(--orange);
   }
@@ -392,11 +392,11 @@
   }
   .math-input {
     font-family: 'Comic Neue', cursive;
-    font-size: 1.2rem;
-    padding: 8px 12px;
+    font-size: 1.4rem;
+    padding: 10px 16px;
     border: 2px solid var(--ink);
     border-radius: 6px;
-    width: 100px;
+    width: 150px;
     text-align: center;
     outline: none;
     background: #252538;
@@ -459,7 +459,7 @@
   }
   .word-input {
     font-family: 'Comic Neue', cursive;
-    font-size: 1.1rem;
+    font-size: 1.49rem;
     padding: 8px 12px;
     border: 2px solid var(--ink);
     border-radius: 6px;
@@ -499,7 +499,7 @@
   }
 
   .page-bottom-bar {
-    padding: 12px 12px;
+    padding: 22px 12px;
     border-top: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -749,8 +749,8 @@
   }
   .sw-word {
     font-family: 'Comic Neue', cursive; font-weight: 700;
-    font-size: 2rem;
-    letter-spacing: 4px;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
     color: var(--text-primary);
   }
   .sw-arrows {
@@ -803,14 +803,13 @@
   /* highlight-cell removed — no spoilers */
 
   .padlock-section {
-    max-width: 400px;
     background: #0d0d1a;
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 20px;
+    padding: 16px 20px;
     text-align: center;
     box-shadow: 4px 4px 0 #000;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
   }
   .padlock-label {
     font-family: 'Comic Neue', cursive; font-weight: 700;
@@ -1122,14 +1121,14 @@
     margin: 12px 0;
   }
   .pin-digit-input {
-    width: 52px; height: 64px;
+    width: 72px; height: 84px;
     background: #0a0a18;
     border: 2px solid #555;
     border-radius: 10px;
     text-align: center;
     font-family: 'Comic Neue', cursive;
     font-weight: 700;
-    font-size: 2rem;
+    font-size: 3rem;
     color: var(--special-gold);
     caret-color: var(--special-gold);
     outline: none;
@@ -1285,9 +1284,9 @@
         <div class="step" style="margin:8px 0;"><span class="step-num">1</span><span>You'll be shown a page from a Wimpy Kid book. Part of the text is <strong>blacked out</strong> — that's your target word!</span></div>
         <div class="step" style="margin:8px 0;"><span class="step-num">2</span><span>Answer the <strong>maths question</strong>. The correct answer reveals the <strong>exact page number</strong> in the real book.</span></div>
         <div class="step" style="margin:8px 0;"><span class="step-num">3</span><span>Find the actual book, turn to that page, and read the blacked-out word. <strong>Figure out which book it is yourself</strong> — that's the challenge!</span></div>
-        <div class="step" style="margin:8px 0;"><span class="step-num">4</span><span>Type the hidden word into the <strong>crossword</strong>. If it's right, it lights up green!</span></div>
-        <div class="step" style="margin:8px 0;"><span class="step-num">5</span><span>After all 20 words are found, read the <strong>gold highlighted squares</strong> and decode them using the cipher table.</span></div>
-        <div class="step" style="margin:8px 0;"><span class="step-num">6</span><span>The decoded letters give you the <strong>4-digit padlock code</strong> to open the treasure chest! 🏆</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">4</span><span>Type the hidden word into the <strong>HUNT</strong> page word box — if correct it goes straight into the crossword. Check progress under <strong>CROSSWORD</strong> tab!</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">5</span><span>As you solve words, <strong>gold squares</strong> appear in the crossword. These are scrambled — write them down in order and use the cipher table in <strong>DECODER</strong> to decode each letter on paper.</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">6</span><span>The 4 decoded words are number words. Enter their digits in the <strong>PADLOCK CODE</strong> box to check — then use the code on the real padlock! 🏆</span></div>
       </div>
       <!-- Right column: Tips + Bonus Eggs -->
       <div style="flex:1; padding:12px 20px 12px 16px; overflow-y:auto;">
@@ -1299,7 +1298,7 @@
           💡 The crossword is always available from the top menu. Come back to it after each word!
         </div>
         <div class="callout special" style="margin-bottom:10px; font-size:0.95rem;">
-          ⭐ <strong>GOLD SQUARES:</strong> Certain crossword squares are highlighted in gold — collect their letters in order, then decode using the cipher!
+          ⭐ <strong>GOLD SQUARES:</strong> Certain squares glow gold as you solve more words. Write down all gold letters in order — they spell scrambled number words. Decode each letter using the cipher table in the DECODER tab!
         </div>
         <h3 style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1.2rem; color:var(--orange); margin:14px 0 10px; letter-spacing:1px;">BONUS HIDDEN EGGS <span style="display:inline-flex;vertical-align:middle;color:#38BDF8;"><svg width="20" height="20"  viewBox="0 0 174 233" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
     <g transform="matrix(1,0,0,1,-1392.03,-1264.02)">
@@ -1408,7 +1407,7 @@
       <div class="clue-panel" id="clue-panel">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
           <div class="clue-number-badge" id="clue-badge">CLUE 1</div>
-          <span id="page-solved-badge" style="display:none; color:#4ADE80; font-family:'Comic Neue',cursive; font-weight:700; font-size:0.95rem; letter-spacing:1px;">✓ SOLVED</span>
+          <span id="page-solved-badge" style="display:none; color:#4ADE80; font-family:'Comic Neue',cursive; font-weight:700; font-size:1.19rem; letter-spacing:1px;">✓ SOLVED</span>
         </div>
         <div class="clue-instruction" id="clue-instruction">Loading...</div>
 
@@ -1454,9 +1453,9 @@
       <!-- Single bottom bar: PAGES | PREV | dots | NEXT -->
       <div class="page-bottom-bar" style="justify-content:center;">
         <span style="font-family:'Comic Neue',cursive; font-weight:700; font-size:0.9rem; color:#FF8C00; white-space:nowrap; text-shadow:0 0 8px #FF8C0088; flex-shrink:0; margin-right:8px;">PAGES:</span>
-        <button class="btn" onclick="prevPage()" style="padding:5px 12px; font-size:0.85rem; background:#2a1400; border-color:#FF8C00; color:#FF8C00; font-weight:700; flex-shrink:0; margin-right:20px;">◀ PREV</button>
+        <button class="btn" onclick="prevPage()" style="padding:10px 20px; font-size:1rem; background:#2a1400; border-color:#FF8C00; color:#FF8C00; font-weight:700; flex-shrink:0; margin-right:20px;">◀ PREV</button>
         <div class="page-dots" id="page-dots"></div>
-        <button class="btn" onclick="nextPage()" style="padding:5px 12px; font-size:0.85rem; background:#2a1400; border-color:#FF8C00; color:#FF8C00; font-weight:700; flex-shrink:0; margin-left:20px;">NEXT ▶</button>
+        <button class="btn" onclick="nextPage()" style="padding:10px 20px; font-size:1rem; background:#2a1400; border-color:#FF8C00; color:#FF8C00; font-weight:700; flex-shrink:0; margin-left:20px;">NEXT ▶</button>
       </div>
 
       <!-- Page navigation dots (hidden — dots are now inside bottom bar) -->
@@ -1513,8 +1512,8 @@
     <div style="display:flex; flex:1; gap:0; overflow:hidden; min-height:0;">
       <!-- Left: special word cards -->
       <div style="flex:1; padding:10px 16px 12px 20px; overflow-y:auto; border-right:1px solid #2d2d44;">
-        <div style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1rem; color:#F472B6; margin-bottom:8px; letter-spacing:1px; text-shadow:0 0 8px #F472B666;">DECODED NUMBERS</div>
-        <div class="special-words-grid" id="special-words-grid" style="grid-template-columns:1fr 1fr; gap:10px;"></div>
+        <div style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1rem; color:#F472B6; margin-bottom:8px; letter-spacing:1px; text-shadow:0 0 8px #F472B666;">SCRAMBLED NUMBER WORDS</div>
+        <div class="special-words-grid" id="special-words-grid" style="grid-template-columns:1fr 1fr 1fr 1fr; gap:8px;"></div>
       </div>
       <!-- Right: cipher table + padlock -->
       <div style="flex:1.2; padding:10px 20px 12px 16px; overflow-y:auto; display:flex; flex-direction:column; gap:14px;">
@@ -2242,7 +2241,7 @@ const BONUS_CLUES = [
   { unlockAfter:4,  emoji:'🥚', text:'Clue 2 of 5: Find somewhere Dad loves to rest his sleepy head... check UNDER his pillow!' },
   { unlockAfter:8,  emoji:'🥚', text:'Clue 3 of 5: You\'re doing brilliantly! Now check your school bag — there\'s something hiding in there with your pens and books!' },
   { unlockAfter:12, emoji:'🥚', text:'Clue 4 of 5: Nearly there! One is taped underneath a chair in the house. Check every chair carefully... look UNDER them!' },
-  { unlockAfter:16, emoji:'🥚', text:'Clue 5 of 5: Last one! Think about where dirty clothes go to get clean... check inside the washing machine!' },
+  { unlockAfter:20, emoji:'🥚', text:'Clue 5 of 5: ALL 20 PAGES SOLVED — amazing work! Last one is where dirty clothes go to get clean... check inside the washing machine!' },
 ];
 
 // ============================================================
@@ -2317,9 +2316,21 @@ function renderPageScreen() {
   document.getElementById('clue-badge').textContent = `CLUE ${state.currentPage + 1}`;
   document.getElementById('clue-instruction').textContent = page.clue;
   document.getElementById('math-question').textContent = page.mathQ;
-  document.getElementById('math-input').value = '';
-  document.getElementById('math-result').textContent = '';
-  document.getElementById('math-result').className = 'math-result';
+  const mathInput = document.getElementById('math-input');
+  const mathResult = document.getElementById('math-result');
+  if (mathDone || isSolved) {
+    mathInput.value = page.mathA;
+    mathInput.disabled = true;
+    mathInput.style.opacity = '0.7';
+    mathResult.textContent = '✓ Correct!';
+    mathResult.className = 'math-result correct';
+  } else {
+    mathInput.value = '';
+    mathInput.disabled = false;
+    mathInput.style.opacity = '';
+    mathResult.textContent = '';
+    mathResult.className = 'math-result';
+  }
   document.getElementById('word-input').value = '';
   document.getElementById('word-hint').textContent = page.wordHint;
 
@@ -2337,7 +2348,7 @@ function renderPageScreen() {
     pageReveal.classList.add('show');
     document.getElementById('page-num-display').textContent = page.bookPage;
     wordArea.style.display = 'block';
-    document.getElementById('math-box').style.opacity = '0.6';
+    document.getElementById('math-box').style.opacity = '1'; document.getElementById('math-box').style.filter = 'brightness(0.75)';
     // Remove blur
     pageImg.classList.remove('blurred');
     overlay.classList.add('hidden');
@@ -2427,7 +2438,7 @@ function checkMath() {
       document.getElementById('page-reveal').classList.add('show');
       document.getElementById('page-num-display').textContent = page.bookPage;
       document.getElementById('word-submit-area').style.display = 'block';
-      document.getElementById('math-box').style.opacity = '0.6';
+      document.getElementById('math-box').style.opacity = '1'; document.getElementById('math-box').style.filter = 'brightness(0.75)';
     }, 600);
 
     // Check bonus unlock
