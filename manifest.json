@@ -1,0 +1,25 @@
+{
+  "name": "Greg's Easter Treasure Hunt",
+  "short_name": "Easter Hunt",
+  "description": "Wimpy Kid Easter Math Treasure Hunt — solve 20 puzzles to crack the padlock!",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

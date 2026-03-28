@@ -1,0 +1,2921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Easter Hunt">
+<meta name="theme-color" content="#1a1a2e">
+<title>🐣 Greg's Easter Hunt</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
+  :root {
+    --yellow: #FFE135;
+    --orange: #FF8C00;
+    --pink: #FF6B9D;
+    --green: #4ADE80;
+    --blue: #60A5FA;
+    --purple: #C084FC;
+    --red: #F87171;
+    --cream: #1e1e2e;
+    --paper: #181825;
+    --ink: #e2e8f0;
+    --lined: #2d2d44;
+    --special-gold: #FFD700;
+    --special-glow: #FF8C00;
+    /* Dark mode surfaces */
+    --surface-1: #1e1e2e;
+    --surface-2: #252538;
+    --surface-3: #2d2d44;
+    --surface-4: #363654;
+    --border: #3d3d5c;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--ink);
+    font-family: 'Comic Neue', cursive;
+    font-size: 16px;
+    touch-action: manipulation;
+  }
+
+  /* LANDSCAPE LOCK */
+  #portrait-warning {
+    display: none;
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--ink);
+    color: var(--yellow);
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 2rem;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    letter-spacing: 2px;
+  }
+
+  @media (orientation: portrait) {
+    #portrait-warning { display: flex !important; }
+    #app { display: none !important; }
+  }
+
+  #app {
+    width: 100vw;
+    height: calc(100vh - 60px);
+    position: fixed;
+    top: 60px; left: 0;
+    overflow: hidden;
+  }
+
+  /* ===== SCREENS ===== */
+  .screen {
+    position: absolute; inset: 0;
+    display: none;
+    background: #181825;
+    color: var(--text-primary);
+  }
+  .screen.active { display: flex; }
+
+  /* Lined bg replaced with plain white */
+  .lined-bg { background: #fff; }
+
+  /* ===== HOME SCREEN ===== */
+  #screen-home {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  .home-paper {
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+  }
+
+  /* Doodle decorations */
+  .doodle {
+    position: absolute;
+    font-size: 2.5rem;
+    animation: float 3s ease-in-out infinite;
+    pointer-events: none;
+    user-select: none;
+  }
+  .doodle:nth-child(1) { top: 5%; left: 3%; animation-delay: 0s; }
+  .doodle:nth-child(2) { top: 8%; right: 4%; animation-delay: 0.5s; }
+  .doodle:nth-child(3) { bottom: 10%; left: 5%; animation-delay: 1s; }
+  .doodle:nth-child(4) { bottom: 8%; right: 3%; animation-delay: 1.5s; }
+  .doodle:nth-child(5) { top: 45%; left: 2%; animation-delay: 0.3s; }
+  .doodle:nth-child(6) { top: 45%; right: 2%; animation-delay: 0.8s; }
+
+  @keyframes float {
+    0%,100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-8px) rotate(3deg); }
+  }
+
+  .home-title {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    color: var(--text-primary);
+    text-align: center;
+    letter-spacing: 3px;
+    line-height: 1.1;
+    text-shadow: 3px 3px 0 var(--yellow), 5px 5px 0 var(--orange);
+    margin-bottom: 8px;
+  }
+
+  .home-subtitle {
+    font-family: 'Comic Neue', cursive;
+    font-size: clamp(0.9rem, 2vw, 1.3rem);
+    color: var(--orange);
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 24px;
+  }
+
+  /* Greg cartoon ASCII-style SVG placeholder */
+  .greg-svg {
+    width: clamp(80px, 12vw, 130px);
+    height: auto;
+    margin-bottom: 16px;
+    filter: drop-shadow(2px 4px 0px rgba(0,0,0,0.2));
+  }
+
+  .home-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .btn {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    letter-spacing: 2px;
+    padding: 12px 28px;
+    border: 2px solid #3d3d5c;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    text-transform: uppercase;
+    background: #252538;
+    color: var(--text-primary);
+    outline: none;
+  }
+  .btn:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+  .btn-orange { background: #c45f00; color: white; border-color: #FF8C00; }
+  .btn-green { background: #14532d; color: #86efac; border-color: #4ADE80; box-shadow: 0 0 10px rgba(74,222,128,0.35); }
+  .btn-blue { background: #1e3a5f; color: #60A5FA; border-color: #60A5FA; }
+  .btn-pink { background: #5a1a35; color: #FF6B9D; border-color: #FF6B9D; }
+  .btn-purple { background: #3b1f5c; color: #C084FC; border-color: #C084FC; }
+
+  .progress-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+  }
+  .progress-bar-outer {
+    width: 200px; height: 20px;
+    background: #0d0d1a;
+    border: 1px solid #3d3d5c;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--yellow));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+  }
+
+  /* ===== INSTRUCTIONS SCREEN ===== */
+  #screen-instructions {
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 20px 70px 20px 80px;
+  }
+
+  .instructions-title {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #C084FC;
+    margin-bottom: 6px;
+    text-shadow: 0 0 16px #C084FC88;
+  }
+
+  .instructions-content {
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: var(--text-primary);
+    max-width: 700px;
+  }
+  .instructions-content h3 {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    color: var(--orange);
+    margin-top: 16px;
+    margin-bottom: 4px;
+  }
+  .instructions-content .step {
+    display: flex;
+    gap: 12px;
+    margin: 6px 0;
+    align-items: flex-start;
+  }
+  .step-num {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.1rem;
+    color: #e9d5ff;
+    background: #4a1d96;
+    border: 2px solid #C084FC;
+    border-radius: 50%;
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(192,132,252,0.4);
+  }
+
+  .callout {
+    background: #2a2010;
+    border: 1px solid #5a4010;
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    box-shadow: 3px 3px 0 var(--ink);
+    font-size: 1.05rem;
+  }
+  .callout.special {
+    background: linear-gradient(135deg, #3a2a00, #4a3500);
+    border-color: var(--special-gold);
+    color: #FFE135;
+  }
+
+  /* ===== PAGE/CLUE SCREEN ===== */
+  #screen-page {
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .page-left {
+    width: 42%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-right: 3px solid var(--ink);
+    overflow: hidden;
+    background: var(--paper);
+    position: relative;
+  }
+
+  .page-header {
+    background: #0d0d1a;
+    color: var(--yellow);
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .book-page-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #12121e;
+  }
+
+  .book-page-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Redaction overlay - positioned via JS */
+
+  .page-right {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #181825;
+  }
+
+  .clue-panel {
+    flex: 1;
+    padding: 16px 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #181825;
+  }
+
+  .clue-number-badge {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+    color: var(--orange);
+  }
+
+  .clue-instruction {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: #fed7aa;
+    background: #1c1208;
+    border: 1px solid #7c3400;
+    border-left: 4px solid #FF8C00;
+    border-radius: 8px;
+    padding: 10px 14px;
+    box-shadow: 0 0 8px rgba(255,140,0,0.12);
+  }
+
+  /* Math question */
+  .math-box {
+    background: #1e1e2e;
+    border: 1px solid var(--blue);
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: 0 0 12px rgba(96,165,250,0.2);
+  }
+  .math-label {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+    color: #60A5FA;
+    margin-bottom: 6px;
+  }
+  .math-question {
+    font-size: 1.27rem;
+    line-height: 1.7;
+    color: #ffffff;
+    margin-bottom: 10px;
+  }
+
+  .math-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .math-input {
+    font-family: 'Comic Neue', cursive;
+    font-size: 1.2rem;
+    padding: 8px 12px;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    width: 100px;
+    text-align: center;
+    outline: none;
+    background: #252538;
+    color: var(--text-primary);
+  }
+  .math-input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(33,150,243,0.2); }
+
+  .math-result {
+    font-size: 1.05rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  .math-result.correct { background: #1a2e1a; color: var(--green); }
+  .math-result.wrong { background: #2e1a1a; color: var(--red); }
+
+  /* Page reveal */
+  .page-reveal {
+    background: #166534;
+    color: #4ADE80;
+    border: 1px solid #4ADE80;
+    border-radius: 10px;
+    padding: 12px 16px;
+    text-align: center;
+    box-shadow: 0 0 16px rgba(74,222,128,0.2);
+    display: none;
+  }
+  .page-reveal.show { display: block; }
+  .page-reveal .page-num {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 3px;
+  }
+
+  /* Word submit area */
+  .word-submit-area {
+    background: #1e1e2e;
+    border: 1px solid var(--purple);
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: 0 0 12px rgba(192,132,252,0.2);
+  }
+  .word-submit-label {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+    color: var(--purple);
+    margin-bottom: 6px;
+  }
+  .word-hint {
+    font-size: 1.05rem;
+    color: #666;
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+  .word-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .word-input {
+    font-family: 'Comic Neue', cursive;
+    font-size: 1.1rem;
+    padding: 8px 12px;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    flex: 1;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    outline: none;
+    background: #252538;
+    color: var(--text-primary);
+  }
+  .word-input:focus { border-color: var(--purple); box-shadow: 0 0 0 2px rgba(156,39,176,0.2); }
+
+  .word-correct-banner {
+    display: none;
+    background: linear-gradient(135deg, #166534, #14532d);
+    color: white;
+    border: 1px solid #4ADE80;
+    border-radius: 10px;
+    padding: 10px 16px;
+    text-align: center;
+    box-shadow: 0 0 16px rgba(74,222,128,0.2);
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .word-correct-banner.special-reveal {
+    background: linear-gradient(135deg, var(--special-gold), var(--special-glow));
+    color: var(--text-primary);
+  }
+  .word-correct-banner.show { display: block; }
+
+  @keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .page-bottom-bar {
+    padding: 12px 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #0d0d1a;
+  }
+
+  /* Page navigator — merged into bottom bar, hidden separately */
+  .page-nav {
+    display: none; /* merged into page-bottom-bar */
+  }
+  .page-dots {
+    display: flex;
+    gap: 4px;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  .page-dot {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: #2d2d44;
+    border: 1px solid #3d3d5c;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    font-size: 0;
+    flex-shrink: 0;
+  }
+  .page-dot.solved { background: #166534; border-color: var(--green); }
+  .page-dot.current { border-color: var(--yellow); transform: scale(1.3); }
+  .page-dot.special-solved { background: var(--special-gold); border-color: var(--special-glow); }
+
+  /* ===== CROSSWORD SCREEN ===== */
+  #screen-crossword {
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .crossword-header {
+    background: #0d0d1a;
+    color: #4ADE80;
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .crossword-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  .crossword-grid-panel {
+    flex: 0 0 auto;
+    padding: 12px;
+    overflow: auto;
+    background: #181825;
+    border-right: 3px solid var(--ink);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .crossword-grid {
+    display: grid;
+    border: 2px solid var(--ink);
+    position: relative;
+  }
+
+  .cell {
+    width: 28px; height: 28px;
+    border: 1px solid #3d3d5c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    background: #2d2d50;
+    color: #e2e8f0;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+    border-color: #4a4a6a;
+  }
+  .cell.empty {
+    background: #e8e8e8;
+    border-color: #cccccc;
+    pointer-events: none;
+  }
+  .cell.filled { color: var(--text-primary); }
+  .cell.correct { background: #1a2e1a; color: var(--green); }
+  .cell.selected { background: #3d0033; border-color: #FF3DAA; box-shadow: inset 0 0 0 2px #FF3DAA; }
+  .cell.highlight { background: #002a3d; border-color: #00D4FF; box-shadow: inset 0 0 0 2px #00D4FF; }
+  .cell.special { border: 2px solid var(--special-gold); background: #2a2010; }
+  .cell.special-revealed {
+    background: #2a2010;
+    border: 2px solid var(--special-gold);
+    color: var(--special-gold);
+    font-weight: 700;
+    box-shadow: inset 0 0 6px rgba(255,215,0,0.3);
+  }
+  .cell.special.correct { background: linear-gradient(135deg, #2a2010, #352810); color: var(--special-gold); }
+
+  .cell-number {
+    position: absolute;
+    top: 1px; left: 2px;
+    font-size: 0.55rem;
+    font-family: 'Comic Neue', cursive;
+    color: #94a3b8;
+    line-height: 1;
+  }
+
+  .crossword-clues-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 12px 16px;
+    background: #181825;
+  }
+
+  .crossword-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .crossword-progress-label {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .clues-section {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    gap: 16px;
+  }
+
+  .clues-col {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .clues-heading {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: #4ADE80;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #4ADE80;
+    text-shadow: 0 0 8px #4ADE8066;
+  }
+
+  .clue-item {
+    font-size: 1.05rem;
+    padding: 5px 8px;
+    margin: 3px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .clue-item:hover { background: #1e1e2e; }
+  .clue-item.solved { color: var(--green); }
+  .clue-item.selected { background: #1a2535; font-weight: bold; }
+  .clue-item .clue-tick { color: var(--green); font-size: 1.05rem; flex-shrink: 0; }
+
+  .word-entry-panel {
+    flex-shrink: 0;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  /* ===== DECODER SCREEN ===== */
+  #screen-decoder {
+    flex-direction: column;
+    padding: 20px 70px 20px 80px;
+    overflow-y: auto;
+  }
+
+  .decoder-title {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #F472B6;
+    margin-bottom: 6px;
+    text-shadow: 0 0 16px #F472B688;
+  }
+
+  .decoder-intro {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    max-width: 600px;
+  }
+
+  .special-words-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+    max-width: 600px;
+  }
+
+  .special-word-card {
+    background: linear-gradient(135deg, #2a2010, #352810);
+    border: 3px solid var(--special-gold);
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 3px 3px 0 var(--special-glow);
+  }
+  .special-word-card.locked {
+    background: #1e1e2e;
+    border-color: #3d3d5c;
+    box-shadow: none;
+    filter: none;
+  }
+  .sw-label {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+    color: var(--special-glow);
+    margin-bottom: 4px;
+  }
+  .sw-word {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 4px;
+    color: var(--text-primary);
+  }
+  .sw-arrows {
+    font-size: 1.2rem;
+    margin: 4px 0;
+    color: var(--special-glow);
+  }
+  .sw-locked-text {
+    font-size: 1.05rem;
+    color: #999;
+    font-style: italic;
+  }
+
+  .cipher-table-container {
+    max-width: 680px;
+    margin-bottom: 20px;
+  }
+  .cipher-table-label {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  .cipher-table {
+    display: grid;
+    grid-template-columns: repeat(13, 1fr);
+    gap: 3px;
+  }
+  .cipher-cell {
+    background: #252538;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-align: center;
+    padding: 3px 2px;
+  }
+  .cipher-cell .enc-letter {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+    color: var(--red);
+    border-bottom: 1px solid #eee;
+  }
+  .cipher-cell .plain-letter {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+    color: var(--blue);
+  }
+  /* highlight-cell removed — no spoilers */
+
+  .padlock-section {
+    max-width: 400px;
+    background: #0d0d1a;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 4px 4px 0 #000;
+    margin-bottom: 20px;
+  }
+  .padlock-label {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 2px;
+    color: var(--yellow);
+    margin-bottom: 8px;
+  }
+  .padlock-code-display {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .padlock-digit {
+    width: 50px; height: 60px;
+    background: #141420;
+    border: 2px solid var(--special-gold);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 2rem;
+    color: var(--special-gold);
+    box-shadow: 0 0 10px rgba(255,215,0,0.3);
+  }
+  .padlock-digit.locked { color: #555; border-color: #555; }
+
+  /* ===== BONUS CLUES SCREEN ===== */
+  #screen-bonus {
+    flex-direction: column;
+    padding: 20px 70px 20px 80px;
+    overflow-y: auto;
+  }
+  .bonus-title {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #38BDF8;
+    margin-bottom: 10px;
+    text-shadow: 0 0 16px #38BDF888;
+  }
+  .egg-clues-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 600px;
+  }
+  .egg-clue-card {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 16px;
+    background: #252538;
+    border: 1px solid var(--orange);
+    border-radius: 10px;
+    box-shadow: 3px 3px 0 var(--orange);
+  }
+  .egg-clue-card.locked {
+    border-color: var(--border);
+    box-shadow: none;
+    background: #1e1e2e;
+  }
+  .egg-icon { font-size: 1.4rem; flex-shrink: 0; display:flex; align-items:center; justify-content:center; width:40px; height:40px; color:#38BDF8; }
+  .egg-clue-text { font-size: 1.05rem; line-height: 1.5; color: var(--text-primary); }
+  .egg-clue-text.locked-text { color: var(--text-muted); font-style: italic; }
+  .egg-unlock-info {
+    font-size: 0.9rem;
+    color: #999;
+    margin-top: 2px;
+  }
+
+  /* ===== CELEBRATION SCREEN ===== */
+  #screen-celebration {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--ink);
+    overflow: hidden;
+  }
+  .celebration-content {
+    text-align: center;
+    z-index: 10;
+    padding: 20px;
+  }
+  .celebration-title {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: clamp(3rem, 8vw, 6rem);
+    letter-spacing: 4px;
+    color: var(--special-gold);
+    text-shadow: 0 0 30px rgba(255,215,0,0.8), 4px 4px 0 var(--special-glow);
+    animation: celebPulse 1s ease-in-out infinite alternate;
+    margin-bottom: 16px;
+  }
+  @keyframes celebPulse {
+    from { text-shadow: 0 0 20px rgba(255,215,0,0.6), 4px 4px 0 var(--special-glow); }
+    to { text-shadow: 0 0 50px rgba(255,215,0,1), 6px 6px 0 var(--special-glow); }
+  }
+  .confetti-container {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .confetti-piece {
+    position: absolute;
+    width: 10px; height: 10px;
+    animation: confettiFall linear infinite;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ===== NAV BAR ===== */
+  .nav-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: #0d0d1a;
+    display: flex;
+    height: 60px;
+    z-index: 100;
+    border-bottom: 1px solid #2d2d44;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.7);
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: 'Comic Neue', cursive;
+    font-weight: 700;
+    font-size: 0.78rem;
+    color: #556;
+    gap: 5px;
+    transition: color 0.25s, background 0.25s, filter 0.25s;
+    border: none;
+    background: none;
+    padding: 5px 2px;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    overflow: hidden;
+  }
+  .nav-label {
+    font-family: 'Comic Neue', cursive;
+    font-weight: 700;
+    font-size: 1.02rem;
+    letter-spacing: 0.5px;
+  }
+  .nav-item svg {
+    color: #666;
+    transition: color 0.2s, filter 0.2s;
+    flex-shrink: 0;
+  }
+  /* Per-tab accent colours when active */
+  #nav-home.active   { color: #FFE135; background: rgba(255,225,53,0.1); }
+  #nav-home.active svg { color: #FFE135; filter: drop-shadow(0 0 4px #FFE135aa); }
+  #nav-page.active   { color: #FF7F00; background: rgba(255,127,0,0.1); }
+  #nav-page.active svg { color: #FF7F00; filter: drop-shadow(0 0 4px #FF7F00aa); }
+  #nav-crossword.active { color: #4CAF50; background: rgba(76,175,80,0.1); }
+  #nav-crossword.active svg { color: #4CAF50; filter: drop-shadow(0 0 4px #4CAF50aa); }
+  #nav-decoder.active { color: #FF69B4; background: rgba(255,105,180,0.1); }
+  #nav-decoder.active svg { color: #FF69B4; filter: drop-shadow(0 0 4px #FF69B4aa); }
+  #nav-bonus.active  { color: #00BCD4; background: rgba(0,188,212,0.1); }
+  #nav-bonus.active svg { color: #00BCD4; filter: drop-shadow(0 0 4px #00BCD4aa); }
+  /* Hover states */
+  #nav-home:hover:not(.active)      { color: #FFE13588; }
+  #nav-home:hover:not(.active) svg  { color: #FFE13588; }
+  #nav-page:hover:not(.active)      { color: #FF7F0088; }
+  #nav-page:hover:not(.active) svg  { color: #FF7F0088; }
+  #nav-crossword:hover:not(.active)     { color: #4CAF5088; }
+  #nav-crossword:hover:not(.active) svg { color: #4CAF5088; }
+  #nav-decoder:hover:not(.active)    { color: #FF69B488; }
+  #nav-decoder:hover:not(.active) svg{ color: #FF69B488; }
+  #nav-bonus:hover:not(.active)     { color: #00BCD488; }
+  #nav-bonus:hover:not(.active) svg { color: #00BCD488; }
+  #nav-instructions.active  { color: #9C27B0; background: rgba(156,39,176,0.1); }
+  #nav-instructions.active svg { color: #9C27B0; filter: drop-shadow(0 0 4px #9C27B0aa); }
+  #nav-instructions:hover:not(.active)     { color: #9C27B088; }
+  #nav-instructions:hover:not(.active) svg { color: #9C27B088; }
+  /* Active indicator bar at bottom of nav */
+  .nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 10%; right: 10%;
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+    background: currentColor;
+  }
+
+  /* screens fill #app which already sits below the nav bar */
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed;
+    top: 70px; left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: var(--ink);
+    color: var(--yellow);
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: 2px solid var(--yellow);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    z-index: 500;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* PNG image buttons */
+  .png-btn {
+    height: 52px;
+    width: auto;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: transform 0.12s, box-shadow 0.12s;
+    background: #fff;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.35);
+    display: block;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .png-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 14px rgba(0,0,0,0.4); }
+  .png-btn:active { transform: scale(0.93) translateY(0); box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+
+  .png-btn-sm {
+    height: 40px;
+    width: auto;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: transform 0.12s, box-shadow 0.12s;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    display: block;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .png-btn-sm:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.35); }
+  .png-btn-sm:active { transform: scale(0.93); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #3d3d5c; border-radius: 3px; }
+
+  /* ===== BOOK PAGE BLUR OVERLAY ===== */
+  .book-page-container {
+    position: relative;
+  }
+  .book-page-img {
+    transition: filter 0.6s ease;
+  }
+  .book-page-img.blurred {
+    filter: blur(12px) brightness(0.6);
+  }
+  .page-blur-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  .page-blur-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .blur-overlay-img {
+    width: clamp(156px, 71%, 260px);
+    height: auto;
+    filter: drop-shadow(0 4px 16px rgba(0,0,0,0.7));
+    animation: floatBob 3s ease-in-out infinite;
+  }
+  @keyframes floatBob {
+    0%,100% { transform: translateY(0px); }
+    50%      { transform: translateY(-8px); }
+  }
+  .blur-overlay-text {
+    font-family: 'Comic Neue', cursive;
+    font-weight: 700;
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    color: #FFE135;
+    text-align: center;
+    padding: 8px 16px;
+    background: rgba(0,0,0,0.65);
+    border-radius: 8px;
+    border: 1px solid rgba(255,225,53,0.4);
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+    max-width: 85%;
+  }
+
+  /* ===== PIN ENTRY & NEON CELEBRATION ===== */
+  .pin-inputs {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 12px 0;
+  }
+  .pin-digit-input {
+    width: 52px; height: 64px;
+    background: #0a0a18;
+    border: 2px solid #555;
+    border-radius: 10px;
+    text-align: center;
+    font-family: 'Comic Neue', cursive;
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--special-gold);
+    caret-color: var(--special-gold);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pin-digit-input:focus {
+    border-color: var(--special-gold);
+    box-shadow: 0 0 12px rgba(255,215,0,0.4);
+  }
+  .pin-digit-input.correct {
+    border-color: #4ADE80;
+    box-shadow: 0 0 16px rgba(74,222,128,0.6);
+    color: #4ADE80;
+  }
+  .pin-digit-input.wrong {
+    border-color: var(--red);
+    box-shadow: 0 0 12px rgba(248,113,113,0.5);
+    animation: pinShake 0.4s ease;
+  }
+  @keyframes pinShake {
+    0%,100% { transform: translateX(0); }
+    20%      { transform: translateX(-6px); }
+    60%      { transform: translateX(6px); }
+  }
+  .pin-feedback {
+    font-family: 'Comic Neue', cursive;
+    font-weight: 700;
+    font-size: 0.95rem;
+    min-height: 1.4em;
+    margin-top: 4px;
+  }
+
+  /* Neon YOU SOLVED IT overlay */
+  #neon-solved {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(0,0,0,0.92);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    cursor: pointer;
+  }
+  #neon-solved.show { display: flex; }
+  .neon-title {
+    font-family: 'Comic Neue', cursive;
+    font-weight: 700;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    letter-spacing: 6px;
+    color: #fff;
+    text-align: center;
+    line-height: 1.1;
+    animation: neonFlicker 1.5s ease-in-out infinite alternate;
+  }
+  .neon-title span.n1 { color: #FF3DAA; text-shadow: 0 0 10px #FF3DAA, 0 0 30px #FF3DAA, 0 0 60px #FF3DAA; }
+  .neon-title span.n2 { color: #FFE135; text-shadow: 0 0 10px #FFE135, 0 0 30px #FFE135, 0 0 60px #FFE135; }
+  .neon-title span.n3 { color: #4ADE80; text-shadow: 0 0 10px #4ADE80, 0 0 30px #4ADE80, 0 0 60px #4ADE80; }
+  .neon-title span.n4 { color: #38BDF8; text-shadow: 0 0 10px #38BDF8, 0 0 30px #38BDF8, 0 0 60px #38BDF8; }
+  @keyframes neonFlicker {
+    0%   { opacity: 1; }
+    92%  { opacity: 1; }
+    93%  { opacity: 0.85; }
+    94%  { opacity: 1; }
+    96%  { opacity: 0.9; }
+    100% { opacity: 1; }
+  }
+  .neon-sub {
+    font-family: 'Comic Neue', cursive;
+    font-weight: 700;
+    font-size: clamp(1rem, 2.5vw, 1.6rem);
+    color: #FFE135;
+    text-shadow: 0 0 8px #FFE135, 0 0 20px #FFE13588;
+    text-align: center;
+    letter-spacing: 2px;
+    animation: neonPulse 2s ease-in-out infinite;
+  }
+  @keyframes neonPulse {
+    0%,100% { text-shadow: 0 0 8px #FFE135, 0 0 20px #FFE13588; }
+    50%     { text-shadow: 0 0 20px #FFE135, 0 0 50px #FFE135, 0 0 80px #FFE13555; }
+  }
+  .neon-tap { 
+    font-family: 'Comic Neue', cursive; 
+    font-size: 0.9rem; 
+    color: #555; 
+    margin-top: 20px;
+    animation: neonFadeIn 3s ease forwards;
+  }
+  @keyframes neonFadeIn { 0%,60%{opacity:0} 100%{opacity:1} }
+  .neon-pin {
+    font-family: 'Comic Neue', cursive;
+    font-weight: 700;
+    font-size: clamp(3rem, 10vw, 6rem);
+    letter-spacing: 20px;
+    color: #FFE135;
+    text-shadow: 0 0 20px #FFE135, 0 0 50px #FFE135, 0 0 100px #FFE13566;
+    animation: neonPulse 1.5s ease-in-out infinite;
+  }
+</style>
+</head>
+<body>
+
+<div id="portrait-warning">
+  <div>📱 ROTATE YOUR TABLET!</div>
+  <div style="font-size:1rem; font-family:'Comic Neue',cursive; color:#ccc">
+    This hunt works in landscape mode only!
+  </div>
+</div>
+
+<div id="app">
+
+  <!-- ===== HOME SCREEN ===== -->
+  <div id="screen-home" class="screen active" style="background:#fff; flex-direction:column; align-items:center; justify-content:center;">
+
+    <!-- Hero image — mix-blend-mode:multiply makes the black background transparent on white -->
+    <div style="position:relative; width:100%; flex:1; min-height:0; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+      <img src="gregg_main_page.jpg" alt="Greg's Easter Hunt" 
+           style="max-width:100%; max-height:100%; object-fit:contain; display:block;">
+    </div>
+
+    <!-- Start CTA hint -->
+    <div style="text-align:center; padding:4px 0 0; flex-shrink:0;">
+      <span style="color:#94a3b8; font-family:'Comic Neue',cursive; font-weight:700; font-size:0.85rem; letter-spacing:1px;">▲ TAP  <span style="color:#FF7F00">HUNT</span>  IN THE MENU ABOVE TO START ▲</span>
+    </div>
+
+    <!-- Progress bar — sits just below the top nav -->
+    <div style="width:100%; padding:8px 20px 6px; background:linear-gradient(180deg,#181825 0%,#1e1e2e 100%); display:flex; align-items:center; gap:12px; flex-shrink:0;">
+      <span style="color:#94a3b8; font-family:'Comic Neue',cursive; font-weight:700; font-size:0.9rem; white-space:nowrap; letter-spacing:0.5px;">🗺️ HUNT PROGRESS</span>
+      <div style="flex:1; height:14px; background:#0d0d1a; border-radius:7px; overflow:hidden; border:1px solid #2d2d44; box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);">
+        <div id="home-progress-bar" style="height:100%; width:0%; background:linear-gradient(90deg,#FF7F00,#FFE135); border-radius:7px; transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1); box-shadow:0 0 8px rgba(255,225,53,0.5);"></div>
+      </div>
+      <span id="home-progress-text" style="color:#94a3b8; font-family:'Comic Neue',cursive; font-weight:700; font-size:1rem; min-width:40px; text-align:right;">0/20</span>
+    </div>
+
+
+  </div>
+
+  <!-- ===== INSTRUCTIONS SCREEN ===== -->
+  <div id="screen-instructions" class="screen" style="flex-direction:column; overflow:hidden;">
+    <div style="padding:12px 20px 8px; flex-shrink:0;">
+      <h2 class="instructions-title">HOW TO PLAY</h2>
+      <div class="callout" style="margin:0; font-size:0.95rem; padding:8px 14px;">
+        <strong>🎯 Your mission:</strong> Solve 20 book-page puzzles, fill in the crossword, decode 4 secret words, and crack open the treasure chest!
+      </div>
+    </div>
+    <!-- Two-column layout -->
+    <div style="display:flex; flex:1; gap:0; overflow:hidden; min-height:0;">
+      <!-- Left column: Step by step -->
+      <div style="flex:1; padding:12px 16px 12px 20px; overflow-y:auto; border-right:1px solid #2d2d44;">
+        <h3 style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1.2rem; color:var(--orange); margin-bottom:10px; letter-spacing:1px;">THE HUNT — STEP BY STEP</h3>
+        <div class="step" style="margin:8px 0;"><span class="step-num">1</span><span>You'll be shown a page from a Wimpy Kid book. Part of the text is <strong>blacked out</strong> — that's your target word!</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">2</span><span>Answer the <strong>maths question</strong>. The correct answer reveals the <strong>exact page number</strong> in the real book.</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">3</span><span>Find the actual book, turn to that page, and read the blacked-out word. <strong>Figure out which book it is yourself</strong> — that's the challenge!</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">4</span><span>Type the hidden word into the <strong>crossword</strong>. If it's right, it lights up green!</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">5</span><span>After all 20 words are found, read the <strong>gold highlighted squares</strong> and decode them using the cipher table.</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">6</span><span>The decoded letters give you the <strong>4-digit padlock code</strong> to open the treasure chest! 🏆</span></div>
+      </div>
+      <!-- Right column: Tips + Bonus Eggs -->
+      <div style="flex:1; padding:12px 20px 12px 16px; overflow-y:auto;">
+        <h3 style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1.2rem; color:var(--orange); margin-bottom:10px; letter-spacing:1px;">TIPS FROM GREG</h3>
+        <div class="callout" style="margin-bottom:10px; font-size:0.95rem;">
+          💡 Some book page numbers appear in <em>more than one book</em>. The scene on the page should tell you which book to look in!
+        </div>
+        <div class="callout" style="margin-bottom:10px; font-size:0.95rem;">
+          💡 The crossword is always available from the top menu. Come back to it after each word!
+        </div>
+        <div class="callout special" style="margin-bottom:10px; font-size:0.95rem;">
+          ⭐ <strong>GOLD SQUARES:</strong> Certain crossword squares are highlighted in gold — collect their letters in order, then decode using the cipher!
+        </div>
+        <h3 style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1.2rem; color:var(--orange); margin:14px 0 10px; letter-spacing:1px;">BONUS HIDDEN EGGS <span style="display:inline-flex;vertical-align:middle;color:#38BDF8;"><svg width="20" height="20"  viewBox="0 0 174 233" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-1392.03,-1264.02)">
+        <g>
+            <g transform="matrix(0.408684,0,0,0.402995,1112.61,1115.31)">
+                <path d="M895.765,376.759C1004.3,376.759 1100.12,536.596 1100.12,691.712C1100.12,846.829 1004.3,938.862 895.765,938.862C787.235,938.862 691.368,858.837 691.368,703.72C691.368,548.604 787.235,376.759 895.765,376.759Z" style="fill:none;stroke:currentColor;stroke-width:15.4px;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1105.01,1100.16)">
+                <path d="M740.088,528.389L755.696,542.999L790.281,517.237L820.677,549.168L852.878,522.413L889.41,554.83L930.439,521.263L967.678,550.22L991.286,514.426L1027.76,543.456L1035,530.743" style="fill:none;stroke:currentColor;stroke-width:14.8px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,2.42565e-17,-2.42565e-17,-0.224216,1100.83,1589.59)">
+                <path d="M748.334,576.21L790.281,517.237L820.677,549.168L851.265,505.306L885.875,546.587L922.876,502.516L958.861,548.152L994.081,524.045L1032.62,576.156" style="fill:none;stroke:currentColor;stroke-width:18.49px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.499776,0,0,-0.601683,1035.11,1684.84)">
+                <path d="M755.696,542.999L790.281,517.237L820.677,549.168L852.878,522.413L889.41,554.83L930.439,521.263L967.678,550.22L991.286,514.426L1027.76,543.456" style="fill:none;stroke:currentColor;stroke-width:15.07px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1097.2)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1258.19,1097.2)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,1100.41,1025.85)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,975.467,1025.85)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,898.88,1030.37)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,987.836,1029.27)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,776.74,992.704)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,730.168,993.015)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.17671,0,0,0.633689,647.423,964.272)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.09px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1132.13)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1258.19,1132.13)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,1100.41,1060.79)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,975.467,1060.79)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,898.88,1065.3)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,987.836,1065.2)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,776.549,1028.44)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,730.168,1027.95)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.19193,0,0,0.647064,636.558,989.54)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1097.2)">
+                <path d="M696.467,733.05C824.395,779.13 955.341,784.968 1081.12,738.527" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.385203,0,0,0.422286,1135.03,1131.77)">
+                <path d="M696.467,733.05C824.395,779.13 955.341,784.968 1081.12,738.527" style="fill:none;stroke:currentColor;stroke-width:7.22px;stroke-linecap:square;"/>
+            </g>
+        </g>
+    </g>
+</svg></span></h3>
+        <div class="callout" style="font-size:0.95rem;">
+          Hidden around the house are <strong>special envelopes with football cards</strong> and <strong>Easter eggs with treats</strong>. Bonus clues unlock as you solve more pages — check the <strong>EGGS</strong> tab!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE/CLUE SCREEN ===== -->
+  <div id="screen-page" class="screen">
+    <!-- Left: book page image -->
+    <div class="page-left">
+      <div class="page-header">
+        <span id="page-header-title">PAGE 1 OF 20</span>
+      </div>
+      <div class="book-page-container" id="book-page-container">
+        <img id="book-page-img" class="book-page-img blurred" src="" alt="Book page">
+        <!-- Blur overlay — shown until math is solved -->
+        <div class="page-blur-overlay" id="page-blur-overlay">
+          <img src="blurred_overlay.png" class="blur-overlay-img" alt="Solve the maths!">
+          <div class="blur-overlay-text">🧮 Solve the maths question<br>to reveal the page!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: clue + math + word entry -->
+    <div class="page-right">
+      <div class="clue-panel" id="clue-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
+          <div class="clue-number-badge" id="clue-badge">CLUE 1</div>
+          <span id="page-solved-badge" style="display:none; color:#4ADE80; font-family:'Comic Neue',cursive; font-weight:700; font-size:0.95rem; letter-spacing:1px;">✓ SOLVED</span>
+        </div>
+        <div class="clue-instruction" id="clue-instruction">Loading...</div>
+
+        <!-- Math question -->
+        <div class="math-box" id="math-box">
+          <div class="math-label">🧮 MATHS CHALLENGE</div>
+          <div class="math-question" id="math-question">Loading...</div>
+          <div class="math-input-row">
+            <input type="number" class="math-input" id="math-input" placeholder="Answer" 
+                   inputmode="numeric" pattern="[0-9]*">
+            <button class="btn btn-green" onclick="checkMath()" style="padding:8px 20px; font-size:1rem;">CHECK</button>
+            <span class="math-result" id="math-result"></span>
+          </div>
+        </div>
+
+        <!-- Page number reveal -->
+        <div class="page-reveal" id="page-reveal">
+          <div style="display:flex; align-items:center; gap:16px; justify-content:space-between;">
+            <div style="flex:1; text-align:left;">
+              <div style="font-size:1rem; font-weight:700; margin-bottom:3px; color:#4ADE80;">📖 FIND THE PAGE!</div>
+              <div style="font-size:0.88rem; line-height:1.4; opacity:0.85;">Work out which Wimpy Kid book this scene is from — then find it and turn to this page number:</div>
+            </div>
+            <div class="page-num" id="page-num-display" style="flex-shrink:0; font-size:3rem;">—</div>
+          </div>
+        </div>
+
+        <!-- Word entry (shown after math solved) -->
+        <div class="word-submit-area" id="word-submit-area" style="display:none">
+          <div class="word-submit-label">✏️ ENTER THE HIDDEN WORD</div>
+          <div style="font-size:0.88rem; line-height:1.45; color:#94a3b8; margin-bottom:8px;">
+            Find the blacked-out word in the book. Type it below — if correct it will <strong style="color:#4ADE80;">automatically appear in your crossword</strong>. Check progress under the <strong style="color:#4ADE80;">CROSSWORD</strong> tab!
+          </div>
+          <div class="word-hint" id="word-hint" style="color:#C084FC; font-style:normal; font-weight:700;"></div>
+          <div class="word-input-row">
+            <input type="text" class="word-input" id="word-input" placeholder="TYPE THE WORD" 
+                   maxlength="12" autocomplete="off" autocorrect="off" spellcheck="false">
+            <button class="btn btn-green" id="word-check-btn" onclick="checkWord()" style="padding:8px 20px; font-size:1rem;">CHECK</button>
+          </div>
+          <div id="word-feedback" style="margin-top:8px; font-family:'Comic Neue',cursive; font-weight:700; font-size:1rem; min-height:1.4em;"></div>
+        </div>
+      </div>
+
+      <!-- Single bottom bar: PAGES | PREV | dots | NEXT -->
+      <div class="page-bottom-bar" style="justify-content:center;">
+        <span style="font-family:'Comic Neue',cursive; font-weight:700; font-size:0.9rem; color:#FF8C00; white-space:nowrap; text-shadow:0 0 8px #FF8C0088; flex-shrink:0; margin-right:8px;">PAGES:</span>
+        <button class="btn" onclick="prevPage()" style="padding:5px 12px; font-size:0.85rem; background:#2a1400; border-color:#FF8C00; color:#FF8C00; font-weight:700; flex-shrink:0; margin-right:20px;">◀ PREV</button>
+        <div class="page-dots" id="page-dots"></div>
+        <button class="btn" onclick="nextPage()" style="padding:5px 12px; font-size:0.85rem; background:#2a1400; border-color:#FF8C00; color:#FF8C00; font-weight:700; flex-shrink:0; margin-left:20px;">NEXT ▶</button>
+      </div>
+
+      <!-- Page navigation dots (hidden — dots are now inside bottom bar) -->
+      <div class="page-nav" style="display:none;">
+        <div class="page-dots" id="page-dots-hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CROSSWORD SCREEN ===== -->
+  <div id="screen-crossword" class="screen">
+    <div class="crossword-header">
+      <span style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1.5rem; letter-spacing:2px; color:#4ADE80; text-shadow:0 0 12px #4ADE8088;">✏ CROSSWORD</span>
+      <div class="crossword-progress">
+        <span class="crossword-progress-label" id="xw-progress-label">0/20 words</span>
+        <div class="progress-bar-outer" style="width:160px">
+          <div class="progress-bar-inner" id="xw-progress-bar" style="width:0%"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="crossword-body">
+      <!-- Grid -->
+      <div class="crossword-grid-panel">
+        <div class="crossword-grid" id="crossword-grid"></div>
+      </div>
+      <!-- Clues + word entry -->
+      <div class="crossword-clues-panel">
+        <div class="clues-section">
+          <div class="clues-col">
+            <div class="clues-heading">ACROSS</div>
+            <div id="clues-across"></div>
+          </div>
+          <div class="clues-col">
+            <div class="clues-heading">DOWN</div>
+            <div id="clues-down"></div>
+          </div>
+        </div>
+        <!-- Word entry removed — words are entered from the hunt page only -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DECODER SCREEN ===== -->
+  <div id="screen-decoder" class="screen" style="flex-direction:column; overflow:hidden;">
+    <!-- Header -->
+    <div style="padding:12px 20px 8px; flex-shrink:0;">
+      <h2 class="decoder-title">SECRET DECODER</h2>
+      <p class="decoder-intro" style="margin:0; font-size:0.9rem;">
+        Read the <strong style="color:var(--special-gold)">gold ⭐ squares</strong> from the crossword in order. Decode each letter using the table. The decoded letters spell 4 number words — those numbers open the padlock!
+      </p>
+    </div>
+    <!-- Two columns -->
+    <div style="display:flex; flex:1; gap:0; overflow:hidden; min-height:0;">
+      <!-- Left: special word cards -->
+      <div style="flex:1; padding:10px 16px 12px 20px; overflow-y:auto; border-right:1px solid #2d2d44;">
+        <div style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1rem; color:#F472B6; margin-bottom:8px; letter-spacing:1px; text-shadow:0 0 8px #F472B666;">DECODED NUMBERS</div>
+        <div class="special-words-grid" id="special-words-grid" style="grid-template-columns:1fr 1fr; gap:10px;"></div>
+      </div>
+      <!-- Right: cipher table + padlock -->
+      <div style="flex:1.2; padding:10px 20px 12px 16px; overflow-y:auto; display:flex; flex-direction:column; gap:14px;">
+        <div class="cipher-table-container" style="margin:0;">
+          <div class="cipher-table-label">🔑 CIPHER TABLE</div>
+          <div class="cipher-table" id="cipher-table"></div>
+        </div>
+        <div class="padlock-section" style="margin:0;">
+          <div class="padlock-label">🔐 PADLOCK CODE — ENTER YOUR PIN!</div>
+          <div style="font-size:0.8rem; color:#94a3b8; font-family:'Comic Neue',cursive; margin-bottom:6px;">
+            Decoded the 4 number words? Enter the digits below to check!
+          </div>
+          <div class="pin-inputs">
+            <input class="pin-digit-input" id="pin-1" type="number" min="0" max="9" maxlength="1" inputmode="numeric" placeholder="?" oninput="pinInput(this,1)">
+            <input class="pin-digit-input" id="pin-2" type="number" min="0" max="9" maxlength="1" inputmode="numeric" placeholder="?" oninput="pinInput(this,2)">
+            <input class="pin-digit-input" id="pin-3" type="number" min="0" max="9" maxlength="1" inputmode="numeric" placeholder="?" oninput="pinInput(this,3)">
+            <input class="pin-digit-input" id="pin-4" type="number" min="0" max="9" maxlength="1" inputmode="numeric" placeholder="?" oninput="pinInput(this,4)">
+          </div>
+          <div class="pin-feedback" id="pin-feedback"></div>
+          <button class="btn btn-green" onclick="checkPin()" style="margin-top:8px; padding:8px 24px; font-size:1rem; width:100%;">🔓 CHECK PIN</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BONUS EGGS SCREEN ===== -->
+  <div id="screen-bonus" class="screen" style="flex-direction:row; overflow:hidden;">
+
+    <!-- Left: title + clue cards -->
+    <div style="flex:1.1; padding:16px 16px 16px 24px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
+      <h2 class="bonus-title" style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+        <span style="color:#38BDF8;display:flex;"><svg width="36" height="36"  viewBox="0 0 174 233" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-1392.03,-1264.02)">
+        <g>
+            <g transform="matrix(0.408684,0,0,0.402995,1112.61,1115.31)">
+                <path d="M895.765,376.759C1004.3,376.759 1100.12,536.596 1100.12,691.712C1100.12,846.829 1004.3,938.862 895.765,938.862C787.235,938.862 691.368,858.837 691.368,703.72C691.368,548.604 787.235,376.759 895.765,376.759Z" style="fill:none;stroke:currentColor;stroke-width:15.4px;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1105.01,1100.16)">
+                <path d="M740.088,528.389L755.696,542.999L790.281,517.237L820.677,549.168L852.878,522.413L889.41,554.83L930.439,521.263L967.678,550.22L991.286,514.426L1027.76,543.456L1035,530.743" style="fill:none;stroke:currentColor;stroke-width:14.8px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,2.42565e-17,-2.42565e-17,-0.224216,1100.83,1589.59)">
+                <path d="M748.334,576.21L790.281,517.237L820.677,549.168L851.265,505.306L885.875,546.587L922.876,502.516L958.861,548.152L994.081,524.045L1032.62,576.156" style="fill:none;stroke:currentColor;stroke-width:18.49px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.499776,0,0,-0.601683,1035.11,1684.84)">
+                <path d="M755.696,542.999L790.281,517.237L820.677,549.168L852.878,522.413L889.41,554.83L930.439,521.263L967.678,550.22L991.286,514.426L1027.76,543.456" style="fill:none;stroke:currentColor;stroke-width:15.07px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1097.2)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1258.19,1097.2)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,1100.41,1025.85)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,975.467,1025.85)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,898.88,1030.37)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,987.836,1029.27)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,776.74,992.704)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,730.168,993.015)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.17671,0,0,0.633689,647.423,964.272)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.09px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1132.13)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1258.19,1132.13)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,1100.41,1060.79)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,975.467,1060.79)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,898.88,1065.3)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,987.836,1065.2)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,776.549,1028.44)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,730.168,1027.95)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.19193,0,0,0.647064,636.558,989.54)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1097.2)">
+                <path d="M696.467,733.05C824.395,779.13 955.341,784.968 1081.12,738.527" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.385203,0,0,0.422286,1135.03,1131.77)">
+                <path d="M696.467,733.05C824.395,779.13 955.341,784.968 1081.12,738.527" style="fill:none;stroke:currentColor;stroke-width:7.22px;stroke-linecap:square;"/>
+            </g>
+        </g>
+    </g>
+</svg></span>
+        BONUS EGG HUNT!
+      </h2>
+      <p style="margin:0 0 8px; font-size:0.95rem; color:var(--text-secondary); line-height:1.5; flex-shrink:0;">
+        Hidden around the house are <strong>5 special envelopes with football cards</strong>!<br>
+        Clues unlock as you solve more pages. Find all 5 for extra treats!
+      </p>
+      <div class="egg-clues-grid" id="egg-clues-grid"></div>
+    </div>
+
+    <!-- Right: Greg Easter image -->
+    <div style="flex:0.9; display:flex; align-items:center; justify-content:center; padding:12px 20px 12px 8px; overflow:hidden; background:#181825;">
+      <img src="greggeaster.jpg" alt="Greg's Easter Hunt" 
+           style="max-width:100%; max-height:100%; object-fit:contain; display:block;">
+    </div>
+
+  </div>
+
+  <!-- ===== CELEBRATION SCREEN ===== -->
+  <div id="screen-celebration" class="screen" style="background:#1a1a2e;">
+    <div class="confetti-container" id="confetti-container"></div>
+    <div class="celebration-content">
+      <div class="celebration-title">🏆 YOU DID IT! 🏆</div>
+      <div style="color:#94a3b8; font-size:1.3rem; font-family:'Comic Neue',cursive; margin-bottom:16px; line-height:1.6;">
+        The crossword is complete! Now decode the 4 golden words<br>and open the treasure chest!
+      </div>
+      <button class="btn" style="font-size:1.2rem; padding:14px 32px" onclick="showScreen('decoder')">
+        🔓 SEE DECODER
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
+
+  <!-- NEON YOU SOLVED IT overlay -->
+  <div id="neon-solved" onclick="document.getElementById('neon-solved').classList.remove('show')">
+    <div class="neon-title">
+      <span class="n1">YOU</span> <span class="n2">CRACKED</span><br>
+      <span class="n3">THE</span> <span class="n4">CODE!</span>
+    </div>
+    <div class="neon-pin" id="neon-pin-display">1 · 2 · 5 · 9</div>
+    <div class="neon-sub">🔐 NOW USE THIS PIN ON THE PADLOCK! 🔐</div>
+    <div class="neon-sub" style="font-size:1rem; color:#4ADE80; text-shadow:0 0 8px #4ADE80;">
+      Open the treasure chest to claim your reward! 🏆
+    </div>
+    <div class="neon-tap">(tap anywhere to close)</div>
+  </div>
+
+</div>
+
+  <!-- Nav bar -->
+  <nav class="nav-bar">
+    <button class="nav-item active" id="nav-home" onclick="showScreen('home')"><svg width="50" height="50"  viewBox="0 0 300 297" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-326.453,-1215.89)">
+        <g transform="matrix(1,0,0,1,-343.849,168.845)">
+            <g transform="matrix(1,0,0,1,80.8186,987.611)">
+                <path d="M667.335,280.43C657.405,288.492 648.03,297.443 639.188,307.246" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1.17559,0,0,1.78827,-5.04815,790.549)">
+                <path d="M667.335,280.43C656.726,288.178 647.407,297.154 639.188,307.246" style="fill:none;stroke:currentColor;stroke-width:4.13px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,80.8186,987.611)">
+                <path d="M643.374,212.555C626.796,185.855 590.482,202.284 592.707,227.594C595.239,256.411 631.661,263.451 649.486,242.8" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,80.8186,987.611)">
+                <path d="M702.207,292.948C732.223,275.408 762.004,277.033 791.607,293.251" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1.00989,0,0,0.922452,74.6027,1003.58)">
+                <ellipse cx="739.087" cy="179.769" rx="6.074" ry="9.637" style="fill:none;stroke:currentColor;stroke-width:6.46px;"/>
+            </g>
+            <g transform="matrix(0.92562,-0.111728,0.0885854,0.733891,218.968,1117.97)">
+                <ellipse cx="739.087" cy="179.769" rx="6.074" ry="9.637" style="fill:none;stroke:currentColor;stroke-width:7.43px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,84.7161,989.896)">
+                <path d="M629.924,114.996C650.279,107.662 670.471,102.407 689.255,115.037" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,80.8186,989.896)">
+                <path d="M640.017,74.149C658.944,84.529 681.318,95.825 693.153,115.037" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,80.8186,987.611)">
+                <path d="M716.536,62.559C704.609,77.22 698.31,87.331 693.153,115.037" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,80.8186,987.611)">
+                <path d="M824.353,207.253C858.413,205.454 882.674,205.27 886.047,232.258C877.375,260.79 851.641,258.835 824.687,254.699" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,80.8186,987.611)">
+                <path d="M821.576,130.219C785.385,97.978 726.78,99.641 693.153,120.479C659.526,141.317 643.139,180.703 645.715,223.744C656.591,328.025 794.325,352.387 853.936,259.455" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+        </g>
+    </g>
+</svg><span class="nav-label">HOME</span></button>
+    <button class="nav-item" id="nav-page" onclick="showScreen('page')"><svg width="50" height="50"  viewBox="0 0 236 278" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-48.0689,-1236.97)">
+        <g transform="matrix(1.86313,0,0,1.86313,-3612.59,-1573.71)">
+            <path d="M2022.55,1623.28C2023.07,1635.34 2025.02,1646.32 2028.89,1655.87" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+            <path d="M2002.33,1616.4C1996.62,1626.96 1992.61,1637.77 1989.43,1649.57" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+            <path d="M1981.52,1575.87C1955.72,1576.35 1966.85,1608.85 1986.73,1597.71" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+            <g transform="matrix(1.16226,0,0,1.19886,-327.634,-313.527)">
+                <ellipse cx="2010.27" cy="1566.79" rx="2.854" ry="3.2" style="fill:none;stroke:currentColor;stroke-width:2.84px;"/>
+            </g>
+            <g transform="matrix(1.16226,0,0,1.19886,-280.096,-324.626)">
+                <ellipse cx="2010.27" cy="1566.79" rx="2.854" ry="3.2" style="fill:none;stroke:currentColor;stroke-width:2.84px;"/>
+            </g>
+            <path d="M1971.99,1561.54L1981.37,1561.54" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+            <g transform="matrix(0.899495,0.436931,-0.436931,0.899495,887.516,-726.587)">
+                <path d="M1971.99,1561.54L1981.37,1561.54" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+            </g>
+            <g transform="matrix(0.647169,0.762346,-0.762346,0.647169,1909.29,-992.625)">
+                <path d="M1971.99,1561.54L1981.37,1561.54" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+            </g>
+            <g transform="matrix(0.0233475,0.999727,-0.999727,0.0233475,3536.73,-497.657)">
+                <path d="M1971.99,1561.54L1981.37,1561.54" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+            </g>
+            <g transform="matrix(-0.191771,0.843065,-0.975092,-0.221803,3946.18,195.561)">
+                <path d="M1971.99,1561.54L1981.37,1561.54" style="fill:none;stroke:currentColor;stroke-width:3.59px;"/>
+            </g>
+            <path d="M2062.53,1564.46C2078.15,1559.12 2087.66,1560.91 2089.67,1571.45C2090.08,1582.53 2079.04,1585.92 2064.48,1586.95" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+            <path d="M2046.02,1541.69L2059.16,1536.24" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+            <path d="M1997.52,1550.92L2013.6,1548.35" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+            <path d="M2000.64,1601.67L2006.23,1595.85" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+            <path d="M2046.66,1521.29C2002.81,1511.42 1972.63,1547.04 1983.89,1588.37C1995.94,1632.61 2068.52,1637.86 2076.27,1586.37" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+            <path d="M2003.66,1598.77C2018.12,1613.66 2034.63,1616.57 2053.27,1606.9" style="fill:none;stroke:currentColor;stroke-width:3.35px;"/>
+        </g>
+    </g>
+</svg><span class="nav-label">HUNT</span></button>
+    <button class="nav-item" id="nav-crossword" onclick="showScreen('crossword')"><svg width="50" height="50"  viewBox="0 0 198 246" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-754.907,-1250.69)">
+        <g>
+            <g transform="matrix(1.33109,0,0,1.29804,-1926.3,-2442.03)">
+                <path d="M2069.19,2946.66C2037.71,2949.36 2030.2,2959.36 2033.91,2971.67C2036.81,2985.65 2049.97,2982.28 2073.64,2976.47C2083.96,2973.95 2120.28,2985.69 2118.15,2960.27C2116.72,2943.21 2088.96,2944.96 2069.19,2946.66Z" style="fill:none;stroke:currentColor;stroke-width:4.75px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2123.04,-2818.64)">
+                <path d="M2136.22,2917.3L2135.6,2909.41" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2123.04,-2818.64)">
+                <path d="M2127.53,2914.92C2132.81,2908.43 2138.1,2906.34 2143.82,2913.36" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2123.04,-2818.64)">
+                <path d="M2124.69,2906.33C2146.6,2883.28 2169.13,2931.55 2127.53,2929.71" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2123.04,-2818.64)">
+                <path d="M2121.22,2884.4C2122.27,2889.96 2123.41,2895.9 2124.69,2902.4" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2123.04,-2818.64)">
+                <path d="M2127.53,2929.71C2129.45,2944.14 2132.18,2958.87 2135.6,2973.85C2143.34,2990.81 2149.91,3007 2154.95,3022.19" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2123.04,-2818.64)">
+                <path d="M2033.28,2989.44C2041.78,2995.95 2131.22,2986.13 2135.6,2973.85" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2123.04,-2818.64)">
+                <path d="M2020.53,2912.99C2024.91,2944.06 2029.55,2976.55 2036.9,3023.99" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2123.04,-2818.64)">
+                <path d="M2054.87,2917.62C2028.71,2947.77 2106.18,2947.13 2084.66,2914.87" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2123.04,-2818.64)">
+                <path d="M2020.65,2880.54C2026.79,2872.35 2032.52,2866.57 2037.84,2863.31" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2098.53,-2818.64)">
+                <path d="M2022,2880.54C2024.47,2875.21 2029.03,2868.72 2034.35,2864.14" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2074.02,-2818.64)">
+                <path d="M2026.75,2880.54C2028.51,2871.26 2028.16,2867.9 2028.59,2863.31" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2049.51,-2818.64)">
+                <path d="M2025.41,2877.97C2025.3,2871.55 2021.95,2865.57 2020.33,2861.95" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2019.31,-2818.64)">
+                <path d="M2021.39,2875.15C2016.06,2865.81 2012.88,2862.91 2009.9,2860.48" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-1994.8,-2817.47)">
+                <path d="M2019.61,2869.14C2013.58,2862.06 2009.48,2859.76 2006.21,2858.01" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-1975.36,-2817.47)">
+                <path d="M2020.46,2863.58C2016.54,2860.04 2010.55,2856.42 2005.97,2855.24" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(3.44513,-0.446183,0.336905,2.60136,-7212.58,-5327.23)">
+                <ellipse cx="2036" cy="2907.89" rx="1.483" ry="2.354" style="fill:none;stroke:currentColor;stroke-width:2.03px;"/>
+            </g>
+            <g transform="matrix(3.19304,-0.413534,0.36908,2.84979,-6706.58,-6130.03)">
+                <ellipse cx="2036" cy="2907.89" rx="1.483" ry="2.354" style="fill:none;stroke:currentColor;stroke-width:2.05px;"/>
+            </g>
+            <g transform="matrix(1.4259,0,0,1.4259,-2122.89,-2823.39)">
+                <path d="M2046.54,2955.96C2047.77,2953.71 2063.16,2950.69 2063.77,2951.31C2065.23,2952.79 2064.65,2962.78 2056.48,2963.56C2049.52,2964.23 2045.8,2957.31 2046.54,2955.96Z" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+            <g transform="matrix(1.37793,0.366748,-0.366748,1.37793,-894.371,-3441.15)">
+                <path d="M2046.58,2956.15C2046.93,2954.51 2063.15,2950.95 2063.77,2951.31C2064.83,2951.93 2064.93,2962.05 2056.64,2963.82C2049.79,2965.27 2046.23,2957.8 2046.58,2956.15Z" style="fill:none;stroke:currentColor;stroke-width:4.38px;"/>
+            </g>
+        </g>
+    </g>
+</svg><span class="nav-label">CROSSWORD</span></button>
+    <button class="nav-item" id="nav-decoder" onclick="showScreen('decoder')"><svg width="50" height="50"  viewBox="0 0 270 217" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-1058.17,-1267.86)">
+        <g>
+            <g transform="matrix(0.355136,0,0,0.341371,992.692,700.9)">
+                <path d="M473.443,1945.55C302.369,1927.65 217.649,1908.17 196.455,1956.69C174.536,2022.96 262.176,2020.46 469.415,2026.49" style="fill:none;stroke:currentColor;stroke-width:17.94px;"/>
+            </g>
+            <g transform="matrix(1.27895,0,0,0.844488,596.093,-95.4216)">
+                <ellipse cx="446.22" cy="1699.54" rx="5.03" ry="9.913" style="fill:none;stroke:currentColor;stroke-width:5.77px;"/>
+            </g>
+            <g transform="matrix(1.40268,0,0,0.896912,600.026,-180.81)">
+                <ellipse cx="446.22" cy="1699.54" rx="5.03" ry="9.913" style="fill:none;stroke:currentColor;stroke-width:5.31px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,719.638,-361.251)">
+                <path d="M358.25,1753.94C356.105,1763.61 356.959,1770.57 368.628,1772.39C409.181,1778.73 502.152,1780.66 529.196,1784.99C533.653,1785.7 530.893,1798.38 530.893,1798.38" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,719.638,-361.251)">
+                <path d="M374.213,1776.16C366.743,1806.56 407.456,1816.64 412.296,1781.61" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,772.521,-357.301)">
+                <path d="M374.213,1776.16C364.93,1807.26 417.717,1818.34 420.561,1780.12" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,719.638,-361.251)">
+                <path d="M493.339,1671.41C516.332,1645.13 568.125,1663.7 555.202,1709.44C587.985,1698.9 604.67,1708.56 604.544,1731.85C604.435,1752.08 583.165,1760.39 559.084,1749.68L558.886,1798.38" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,719.638,-361.251)">
+                <path d="M523.802,1632.23C531.943,1641.45 536.223,1649.97 538.044,1659.37C550.547,1655.21 561.186,1655.07 567.043,1655.43" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,719.638,-361.251)">
+                <path d="M538.981,1659.37L557.142,1632.23" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,719.638,-361.251)">
+                <path d="M567.043,1728.88C574.922,1724.81 581.742,1725.21 588.23,1728.88" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,719.638,-361.251)">
+                <path d="M577.637,1727.42C578.159,1730.33 577.978,1732.67 576.437,1736" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,719.638,-361.251)">
+                <path d="M519.691,1824.3L523.802,1803.42L567.043,1802.72L571.141,1824.3L519.691,1824.3Z" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,719.638,-361.251)">
+                <path d="M523.802,1824.3C520.119,1830.7 519.421,1836.51 517.624,1842.86" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,719.638,-361.251)">
+                <path d="M567.043,1824.3C570.028,1830.89 571.653,1836.84 571.141,1841.79" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/>
+            </g>
+        </g>
+    </g>
+</svg><span class="nav-label">DECODER</span></button>
+    <button class="nav-item" id="nav-bonus" onclick="showScreen('bonus')"><svg width="50" height="50"  viewBox="0 0 174 233" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-1392.03,-1264.02)">
+        <g>
+            <g transform="matrix(0.408684,0,0,0.402995,1112.61,1115.31)">
+                <path d="M895.765,376.759C1004.3,376.759 1100.12,536.596 1100.12,691.712C1100.12,846.829 1004.3,938.862 895.765,938.862C787.235,938.862 691.368,858.837 691.368,703.72C691.368,548.604 787.235,376.759 895.765,376.759Z" style="fill:none;stroke:currentColor;stroke-width:15.4px;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1105.01,1100.16)">
+                <path d="M740.088,528.389L755.696,542.999L790.281,517.237L820.677,549.168L852.878,522.413L889.41,554.83L930.439,521.263L967.678,550.22L991.286,514.426L1027.76,543.456L1035,530.743" style="fill:none;stroke:currentColor;stroke-width:14.8px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,2.42565e-17,-2.42565e-17,-0.224216,1100.83,1589.59)">
+                <path d="M748.334,576.21L790.281,517.237L820.677,549.168L851.265,505.306L885.875,546.587L922.876,502.516L958.861,548.152L994.081,524.045L1032.62,576.156" style="fill:none;stroke:currentColor;stroke-width:18.49px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.499776,0,0,-0.601683,1035.11,1684.84)">
+                <path d="M755.696,542.999L790.281,517.237L820.677,549.168L852.878,522.413L889.41,554.83L930.439,521.263L967.678,550.22L991.286,514.426L1027.76,543.456" style="fill:none;stroke:currentColor;stroke-width:15.07px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1097.2)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1258.19,1097.2)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,1100.41,1025.85)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,975.467,1025.85)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,898.88,1030.37)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,987.836,1029.27)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,776.74,992.704)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,730.168,993.015)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.17671,0,0,0.633689,647.423,964.272)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.09px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1132.13)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1258.19,1132.13)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,1100.41,1060.79)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,975.467,1060.79)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,898.88,1065.3)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,987.836,1065.2)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,776.549,1028.44)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,730.168,1027.95)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.19193,0,0,0.647064,636.558,989.54)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1097.2)">
+                <path d="M696.467,733.05C824.395,779.13 955.341,784.968 1081.12,738.527" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.385203,0,0,0.422286,1135.03,1131.77)">
+                <path d="M696.467,733.05C824.395,779.13 955.341,784.968 1081.12,738.527" style="fill:none;stroke:currentColor;stroke-width:7.22px;stroke-linecap:square;"/>
+            </g>
+        </g>
+    </g>
+</svg><span class="nav-label">EGGS</span></button>
+    <button class="nav-item" id="nav-instructions" onclick="showScreen('instructions')"><svg width="50" height="50" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="13" r="10"/><path d="M10 10C10 8.3 11.3 7 13 7C14.7 7 16 8.3 16 10C16 11.5 15 12.5 13.5 13.2C13.2 13.4 13 13.7 13 14V15"/><circle cx="13" cy="18" r="0.8" fill="currentColor" stroke="none"/></svg><span class="nav-label">HELP</span></button>
+  </nav>
+
+<script>
+// ============================================================
+// GAME DATA
+// ============================================================
+
+const CIPHER = {
+  A:'I', B:'S', C:'W', D:'Y', E:'R', F:'D', G:'P',
+  H:'B', I:'V', J:'J', K:'L', L:'E', M:'G', N:'U',
+  O:'K', P:'H', Q:'A', R:'N', S:'T', T:'F', U:'O',
+  V:'Z', W:'M', X:'X', Y:'Q', Z:'C'
+};
+
+
+// 20 hunt pages — correct image/book/word mapping, all words verified in page text
+const PAGES = [
+  {
+    id:1, bookPage:127, imageFile:'page_1.jpg',
+    word:'PATEL', wordHint:'_ _ _ _ _ (5 letters)',
+    clue:"The basketball coach ran the team through plays that were supposed to make scoring easy. They went five on three, then two, then one... and STILL couldn't score! Find the blacked-out name of the coach who drew up those plays.",
+    mathQ:"Place value: 7,549 = 7,000 + ___ + 40 + 9\n\nWhat is the missing number?",
+    mathA:500,
+    mathHint:"Think about the hundreds column.",
+    redact:{x:0.14, y:0.42, w:0.28, h:0.058}
+  },
+  {
+    id:2, bookPage:89, imageFile:'page_2.jpg',
+    word:'COPYING', wordHint:'_ _ _ _ _ _ _ (7 letters)',
+    clue:"Greg is trying to hide from the coaches with clipboards at basketball tryouts. But then the other kids who weren't doing well noticed what Greg was doing and started doing the same thing. Find the blacked-out word!",
+    mathQ:"772 − 207 = ?",
+    mathA:565,
+    mathHint:"Subtract the hundreds, tens and ones separately. No borrowing needed!",
+    redact:{x:0.35, y:0.06, w:0.36, h:0.058}
+  },
+  {
+    id:3, bookPage:82, imageFile:'page_3.jpg',
+    word:'RENEGADES', wordHint:'_ _ _ _ _ _ _ _ _ (9 letters)',
+    clue:"Rodrick's band called some clubs they'd never heard of them before. One club owner knew EXACTLY who Löded Diper was! Find the name of the famous Rock Club written in the text.",
+    mathQ:"2962 × 47 = ?",
+    mathA:139214,
+    mathHint:"Use long multiplication. Try 2962 × 40 = 118,480 then add 2962 × 7 = 20,734.",
+    redact:{x:0.10, y:0.16, w:0.52, h:0.058}
+  },
+  {
+    id:4, bookPage:137, imageFile:'page_4.jpg',
+    word:'FESTIVAL', wordHint:'_ _ _ _ _ _ _ _ (8 letters)',
+    clue:"Löded Diper are planning to make money by selling merchandise. Rodrick says every band that performs at a certain event has a merch table in the parking lot. Find the name of that event!",
+    mathQ:"The Rock n Rowdy festival had 46 bands performing.\nEach band played a set of 6 songs.\n\nHow many songs were performed at the festival in total?",
+    mathA:276,
+    mathHint:"46 × 6. Try 40 × 6 = 240, then add 6 × 6 = 36.",
+    redact:{x:0.33, y:0.16, w:0.36, h:0.058}
+  },
+  {
+    id:5, bookPage:143, imageFile:'page_5.jpg',
+    word:'BONFIRE', wordHint:'_ _ _ _ _ _ _ (7 letters)',
+    clue:"The family needs to find Rodrick before they can all go to the beach for a special night event. Read the very first sentence — it mentions two things happening on the beach. Find the word for the outdoor fire!",
+    mathQ:"Felix has 81 marbles. He divides them equally into 3 bags.\n\nHow many marbles are in each bag?",
+    mathA:27,
+    mathHint:"81 ÷ 3 = ? Think: 3 × what = 81?",
+    redact:{x:0.28, y:0.04, w:0.28, h:0.058}
+  },
+  {
+    id:6, bookPage:29, imageFile:'page_6.jpg',
+    word:'URINAL', wordHint:'_ _ _ _ _ _ (6 letters)',
+    clue:"Greg's sock had a very bad day at the airport! The hand dryer was way too powerful and the sock went flying across the bathroom. Read the bottom paragraph to find where it ended up.",
+    mathQ:"At the airport Greg counted 6 departure gates.\nEach gate had 48 seats in the waiting area.\n\nHow many seats were there altogether?",
+    mathA:288,
+    mathHint:"6 × 48. Try 6 × 40 = 240, then add 6 × 8 = 48.",
+    redact:{x:0.73, y:0.72, w:0.20, h:0.058}
+  },
+  {
+    id:7, bookPage:61, imageFile:'page_7.jpg',
+    word:'RESELLING', wordHint:'_ _ _ _ _ _ _ _ _ (9 letters)',
+    clue:"Fudgedogs were a massive hit in the school cafeteria! Kids in the early lunch periods were buying them all up and then doing something very clever with them to make money. What were they doing?",
+    mathQ:"15% of 640 = ?",
+    mathA:96,
+    mathHint:"Find 10% first (= 64), then find 5% (= 32). Add them together.",
+    redact:{x:0.26, y:0.55, w:0.36, h:0.058}
+  },
+  {
+    id:8, bookPage:77, imageFile:'page_8.jpg',
+    word:'REPUTATION', wordHint:'_ _ _ _ _ _ _ _ _ _ (10 letters)',
+    clue:"Greg is thinking about what happens when famous people let their name be used for something embarrassing. Look at the enormous building in the illustration and read the last word of the top paragraph!",
+    mathQ:"807 × 8 = ?",
+    mathA:6456,
+    mathHint:"Try 800 × 8 = 6,400 first, then add 7 × 8.",
+    redact:{x:0.36, y:0.06, w:0.46, h:0.058}
+  },
+  {
+    id:9, bookPage:53, imageFile:'page_9.jpg',
+    word:'CELEBRITY', wordHint:'_ _ _ _ _ _ _ _ _ (9 letters)',
+    clue:"Greg is upset because his parents forgot his birthday! He talks about what your birthday is supposed to feel like — like a really famous, important person. Find the word he uses!",
+    mathQ:"Greg's class voted for their favourite Wimpy Kid book.\nThe votes were: 34, 28, 19, 41 and 38.\n\nWhat was the total number of votes cast?",
+    mathA:160,
+    mathHint:"Add all five numbers. Try 34 + 28 = 62, then 62 + 19 = 81, then keep going.",
+    redact:{x:0.22, y:0.04, w:0.40, h:0.058}
+  },
+  {
+    id:10, bookPage:137, imageFile:'page_10.jpg',
+    word:'CUPCAKES', wordHint:'_ _ _ _ _ _ _ _ (8 letters)',
+    clue:"Greg and Rowley spent the whole afternoon trapped at a random kid's birthday party. The parents were really nice though — look at the bottom paragraph to find out what the mum sent them home with!",
+    mathQ:"The birthday party had 9 tables with 8 chairs at each table.\nThere were also 12 extra chairs against the wall.\n\nHow many chairs were there altogether?",
+    mathA:84,
+    mathHint:"9 × 8 = 72 chairs at tables. Then add the 12 extra ones.",
+    redact:{x:0.38, y:0.78, w:0.34, h:0.058}
+  },
+  {
+    id:11, bookPage:77, imageFile:'page_11.jpg',
+    word:'SPRINKLER', wordHint:'_ _ _ _ _ _ _ _ _ (9 letters)',
+    clue:"Greg is clearing snow from a driveway using a hose — and it's working brilliantly! Then he spots something leaning against the house and gets an even better idea. What did he spot?",
+    mathQ:"Greg cleared a rectangular driveway 12 metres long and 3.5 metres wide.\n\nWhat is the area of the driveway in square metres?",
+    mathA:42,
+    mathHint:"Area = length × width. Try 12 × 3.5.",
+    redact:{x:0.14, y:0.46, w:0.38, h:0.058}
+  },
+  {
+    id:12, bookPage:143, imageFile:'page_12.jpg',
+    word:'LEISURE', wordHint:'_ _ _ _ _ _ _ (7 letters)',
+    clue:"Rodrick tried to give an elderly lady a lift home in the Löded Diper van — but she refused to get in! Read the very first line of text to find the name of the place she was going back to.",
+    mathQ:"614 × 32 = ?\n\nUse long multiplication and show your working.",
+    mathA:19648,
+    mathHint:"Split it: 614 × 30 = 18,420 and 614 × 2 = 1,228. Then add them.",
+    redact:{x:0.38, y:0.04, w:0.34, h:0.058}
+  },
+  {
+    id:13, bookPage:211, imageFile:'page_13.jpg',
+    word:'SPANISH', wordHint:'_ _ _ _ _ _ _ (7 letters)',
+    clue:"The family's car broke down and some helpers arrived. Mum and Dad couldn't talk to them at all! Then little Manny completely shocked everyone. Read the bottom of the page to find the language he spoke!",
+    mathQ:"Emily needs 60g of fruit and 100ml of juice to make a small smoothie.\nShe uses the same recipe for a large smoothie.\nThe large smoothie uses 350ml of juice.\n\nHow much fruit does she need for the large smoothie? (in grams)",
+    mathA:210,
+    mathHint:"100ml uses 60g. So 1ml uses 60÷100 = 0.6g. Then 350 × 0.6 = ? Or: the juice tripled from 100 to 350 (ratio 3.5), so fruit = 60 × 3.5.",
+    redact:{x:0.36, y:0.62, w:0.30, h:0.058}
+  },
+  {
+    id:14, bookPage:127, imageFile:'page_14.jpg',
+    word:'SWEETIE', wordHint:'_ _ _ _ _ _ _ (7 letters)',
+    clue:"Greg is in the vet waiting room behind a gerbil and a cat with its face stuck in a yogurt container! The bottom paragraph mentions the Heffley family used to have a dog. What was the dog called?",
+    mathQ:"¹⁄₃ − ¹⁄₉ = ?⁄₉\n\nEnter just the numerator (the top number when the denominator is 9).",
+    mathA:2,
+    mathHint:"Convert ¹⁄₃ into ninths first: ¹⁄₃ = ³⁄₉. Then ³⁄₉ − ¹⁄₉ = ?",
+    redact:{x:0.22, y:0.55, w:0.30, h:0.058}
+  },
+  {
+    id:15, bookPage:184, imageFile:'page_15.jpg',
+    word:'SOUVENIR', wordHint:'_ _ _ _ _ _ _ _ (8 letters)',
+    clue:"After the Cranium Shaker ride, Rowley's dad bought him a boppy balloon and a shirt. Greg was still feeling sick! Read the very first sentence to find the type of shop where the shirt came from.",
+    mathQ:"The souvenir shop sold 147 Cranium Shaker t-shirts in one week.\nEach t-shirt cost £12.\n\nHow much money did the shop take in total?",
+    mathA:1764,
+    mathHint:"147 × 12. Try 100 × 12 = 1200, then 47 × 12 = 564. Add together.",
+    redact:{x:0.36, y:0.06, w:0.36, h:0.058}
+  },
+  {
+    id:16, bookPage:89, imageFile:'page_16.jpg',
+    word:'KEYPAD', wordHint:'_ _ _ _ _ _ (6 letters)',
+    clue:"Greg opened a birthday present from Mum and Dad — a Ladybug Cellular Telephone! It had only two buttons. Read the second paragraph to find the word for the thing it was missing!",
+    mathQ:"(5 + 3)² − 12 ÷ 4 = ?\n\nRemember: Brackets first, then powers, then ÷, then −",
+    mathA:61,
+    mathHint:"Step 1: (5+3) = 8. Step 2: 8² = 64. Step 3: 12÷4 = 3. Step 4: 64 − 3 = ?",
+    redact:{x:0.23, y:0.56, w:0.26, h:0.058}
+  },
+  {
+    id:17, bookPage:71, imageFile:'page_17.jpg',
+    word:'TAIL', wordHint:'_ _ _ _ (4 letters)',
+    clue:"Greg read a Spineticklers book called 'Tails, You Lose' by I.M. Spooky — and it gave him the strangest dream! Read the paragraph below the book cover to find the body part Greg dreamed he had!",
+    mathQ:"4 × 5 − 27 ÷ 3 = ?\n\nRemember: multiplication and division before subtraction!",
+    mathA:11,
+    mathHint:"Step 1: 4 × 5 = 20. Step 2: 27 ÷ 3 = 9. Step 3: 20 − 9 = ?",
+    redact:{x:0.55, y:0.39, w:0.12, h:0.058}
+  },
+  {
+    id:18, bookPage:191, imageFile:'page_18.jpg',
+    word:'STASH', wordHint:'_ _ _ _ _ (5 letters)',
+    clue:"Greg went to the laundry room to get paper towels and made an incredible discovery! Read the second paragraph — it describes exactly what he found hidden behind the paper towels. Find the word for the hidden collection!",
+    mathQ:"3245 × 23 = ?",
+    mathA:74635,
+    mathHint:"Use long multiplication. Try 3245 × 20 = 64,900 then add 3245 × 3 = 9,735.",
+    redact:{x:0.16, y:0.22, w:0.20, h:0.058}
+  },
+  {
+    id:19, bookPage:91, imageFile:'page_19.jpg',
+    word:'BROWNIE', wordHint:'_ _ _ _ _ _ _ (7 letters)',
+    clue:"Greg's team was responsible for raking leaves in the playground area. A girl was put in charge of Greg's group — she was a junior Girl Scout. Read the last line of the opening paragraph to find her Scout rank!",
+    mathQ:"³⁄₈ × 240 = ?",
+    mathA:90,
+    mathHint:"Find ¹⁄₈ of 240 first (240 ÷ 8 = 30), then multiply by 3.",
+    redact:{x:0.40, y:0.04, w:0.30, h:0.058}
+  },
+  {
+    id:20, bookPage:134, imageFile:'page_20.jpg',
+    word:'SCRATCH', wordHint:'_ _ _ _ _ _ _ (7 letters)',
+    clue:"A kid in the back of a vehicle is holding a handwritten sign with a spooky warning on it! Look at what the sign says — and the name that appears again in the two text paragraphs below. Find the surname!",
+    mathQ:"Hardscrabble Farms has a rectangular field.\nThe perimeter is 96 metres and the length is 30 metres.\n\nWhat is the width of the field in metres?",
+    mathA:18,
+    mathHint:"Perimeter = 2 × (length + width). So length + width = 96 ÷ 2 = 48. Width = 48 − 30.",
+    redact:{x:0.13, y:0.68, w:0.34, h:0.058}
+  },
+];
+
+// Crossword layout data — rebuilt with correct 20 words, verified conflict-free
+const CROSSWORD_LAYOUT = {
+  rows: 26, cols: 26,
+  words: [
+    { word:'SOUVENIR',   row:0,  col:6,  dir:'V' },
+    { word:'BROWNIE',    row:1,  col:4,  dir:'H' },
+    { word:'KEYPAD',     row:3,  col:11, dir:'V' },
+    { word:'BONFIRE',    row:3,  col:13, dir:'V' },
+    { word:'RENEGADES',  row:5,  col:15, dir:'V' },
+    { word:'URINAL',     row:5,  col:22, dir:'V' },
+    { word:'SPANISH',    row:6,  col:8,  dir:'V' },
+    { word:'REPUTATION', row:7,  col:6,  dir:'H' },
+    { word:'CUPCAKES',   row:7,  col:18, dir:'V' },
+    { word:'COPYING',    row:7,  col:18, dir:'H' },
+    { word:'STASH',      row:9,  col:2,  dir:'V' },
+    { word:'PATEL',      row:10, col:0,  dir:'H' },
+    { word:'TAIL',       row:10, col:6,  dir:'H' },
+    { word:'SCRATCH',    row:12, col:2,  dir:'H' },
+    { word:'CELEBRITY',  row:12, col:7,  dir:'V' },
+    { word:'LEISURE',    row:13, col:12, dir:'H' },
+    { word:'RESELLING',  row:14, col:10, dir:'V' },
+    { word:'SPRINKLER',  row:15, col:0,  dir:'H' },
+    { word:'SWEETIE',    row:16, col:10, dir:'H' },
+    { word:'FESTIVAL',   row:18, col:3,  dir:'H' },
+  ]
+};
+
+// Gold-highlighted cipher squares: read in order to decode ONE TWO FIVE NINE -> padlock 1-2-5-9
+const CIPHER_CELLS = [
+  // URL -> ONE: U from SOUVENIR[2], R from RESELLING[0], L from CELEBRITY[2]
+  [2,6],    // SOUVENIR[2] = U
+  [14,10],  // RESELLING[0] = R
+  [14,7],   // CELEBRITY[2] = L
+  // RARL -> NINE: R from RENEGADES[0], A from STASH[2], R from SPRINKLER[2], L from URINAL[5]
+  [5,15],   // RENEGADES[0] = R
+  [11,2],   // STASH[2] = A
+  [15,2],   // SPRINKLER[2] = R
+  [10,22],  // URINAL[5] = L
+  // SCU -> TWO: S from LEISURE[3], C from COPYING[0], U from REPUTATION[3]
+  [13,15],  // LEISURE[3] = S
+  [7,18],   // COPYING[0] = C
+  [7,9],    // REPUTATION[3] = U
+  // TAIL -> FIVE: T from TAIL[0], A from FESTIVAL[6], I from BROWNIE[5], L from SPRINKLER[6]
+  [10,6],   // TAIL[0] = T
+  [18,9],   // FESTIVAL[6] = A
+  [1,9],    // BROWNIE[5] = I
+  [15,6],   // SPRINKLER[6] = L
+];
+
+const CIPHER_CELL_SET = new Set(CIPHER_CELLS.map(([r,c]) => `${r},${c}`));
+
+const CIPHER_GROUPS = [
+  { encoded:'URL',  triggerWords:['SOUVENIR','RESELLING','CELEBRITY'],       digit:'1' },
+  { encoded:'RARL', triggerWords:['RENEGADES','STASH','SPRINKLER','URINAL'], digit:'9' },
+  { encoded:'SCU',  triggerWords:['LEISURE','COPYING','REPUTATION'],          digit:'2' },
+  { encoded:'TAIL', triggerWords:['TAIL','FESTIVAL','BROWNIE','SPRINKLER'],   digit:'5' },
+];
+// Cipher cells are embedded in hunt words — they reveal naturally when hunt words are solved
+// Cipher word → hunt words whose letters form it (ALL must be solved to show in decoder)
+const CIPHER_WORD_SOURCES = {
+  'URL':  ['SOUVENIR','RESELLING','CELEBRITY'],
+  'RARL': ['RENEGADES','STASH','SPRINKLER','URINAL'],
+  'SCU':  ['LEISURE','COPYING','REPUTATION'],
+  'TAIL_ENC': ['TAIL','FESTIVAL','BROWNIE','SPRINKLER'],
+};
+// These were standalone cipher words - no longer used as crossword words
+
+// Clue data — matches new crossword grid
+// Cipher encoded words — gold letters scattered across hunt words in the crossword
+
+const ACROSS_CLUES = [
+  { num:2,  word:'BROWNIE',    desc:'The junior Girl Scout rank of the girl in charge of Greg\'s raking team (Page 19)' },
+  { num:8,  word:'REPUTATION', desc:'What Greg says a bad naming deal can damage (Page 8)' },
+  { num:9,  word:'COPYING',    desc:'What the other kids at tryouts started doing when they saw Greg hide (Page 2)' },
+  { num:11, word:'PATEL',      desc:'The basketball coach whose plays still couldn\'t get the team to score (Page 1)' },
+  { num:12, word:'TAIL',       desc:'The thing Greg dreamed he had after reading a Spineticklers book (Page 17)' },
+  { num:13, word:'SCRATCH',    desc:'The spooky farmer legend at Hardscrabble Farms (Page 20)' },
+  { num:15, word:'LEISURE',    desc:'The retirement home the elderly lady was taken back to (Page 12)' },
+  { num:17, word:'SPRINKLER',  desc:'What Greg spotted leaning against the house in the snow (Page 11)' },
+  { num:18, word:'SWEETIE',    desc:'The Heffley family dog\'s name (Page 14)' },
+  { num:19, word:'FESTIVAL',   desc:'The Rock \'n\' Rowdy event where Löded Diper planned to sell merch (Page 4)' },
+];
+const DOWN_CLUES = [
+  { num:1,  word:'SOUVENIR',   desc:'The shop where Rowley bought his Cranium Shaker t-shirt (Page 15)' },
+  { num:3,  word:'KEYPAD',     desc:'The thing missing from Greg\'s Ladybug birthday phone (Page 16)' },
+  { num:4,  word:'BONFIRE',    desc:'The beach fire the family headed to for the turtle hatching (Page 5)' },
+  { num:5,  word:'RENEGADES',  desc:'The famous Rock Club where Löded Diper came to meet the owner (Page 3)' },
+  { num:6,  word:'URINAL',     desc:'Where Greg\'s sock landed after the airport hand dryer went wild (Page 6)' },
+  { num:7,  word:'SPANISH',    desc:'The language Manny amazed everyone by speaking perfectly (Page 13)' },
+  { num:9,  word:'CUPCAKES',   desc:'What the birthday boy\'s mum sent Greg and Rowley home with (Page 10)' },
+  { num:10, word:'STASH',      desc:'Mum\'s secret collection of Halloween candy in the laundry room (Page 18)' },
+  { num:14, word:'CELEBRITY',  desc:'How Greg expects to feel on his birthday — like a famous person (Page 9)' },
+  { num:16, word:'RESELLING',  desc:'What Ricky Fisher was doing with fudgedogs at a higher price (Page 7)' },
+];
+
+const BONUS_CLUES = [
+  { unlockAfter:0,  emoji:'🥚', text:'The very first one is free! Look inside the book "Guinness World Records 2025" — there\'s a special envelope waiting for you inside!' },
+  { unlockAfter:4,  emoji:'🥚', text:'Clue 2 of 5: Find somewhere Dad loves to rest his sleepy head... check UNDER his pillow!' },
+  { unlockAfter:8,  emoji:'🥚', text:'Clue 3 of 5: You\'re doing brilliantly! Now check your school bag — there\'s something hiding in there with your pens and books!' },
+  { unlockAfter:12, emoji:'🥚', text:'Clue 4 of 5: Nearly there! One is taped underneath a chair in the house. Check every chair carefully... look UNDER them!' },
+  { unlockAfter:16, emoji:'🥚', text:'Clue 5 of 5: Last one! Think about where dirty clothes go to get clean... check inside the washing machine!' },
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  currentPage: 0,        // 0-based index into PAGES
+  solvedPages: {},       // pageId -> word
+  mathSolved: {},        // pageId -> true
+  crosswordSolved: {},   // word -> true
+  currentXwWord: null,
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('easterHunt2025');
+    if (s) state = JSON.parse(s);
+  } catch(e) {}
+}
+function saveState() {
+  try { localStorage.setItem('easterHunt2025', JSON.stringify(state)); } catch(e) {}
+}
+
+// ============================================================
+// SCREEN MANAGEMENT
+// ============================================================
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  const navEl = document.getElementById('nav-' + name);
+  if (navEl) navEl.classList.add('active');
+
+  if (name === 'page') renderPageScreen();
+  if (name === 'crossword') renderCrossword();
+  if (name === 'decoder') renderDecoder();
+  if (name === 'bonus') renderBonus();
+  if (name === 'home') updateHomeProgress();
+}
+
+function startHunt() {
+  // Find first unsolved page
+  for (let i = 0; i < PAGES.length; i++) {
+    if (!state.solvedPages[PAGES[i].id]) {
+      state.currentPage = i;
+      break;
+    }
+  }
+  showScreen('page');
+}
+
+// ============================================================
+// HOME SCREEN
+// ============================================================
+function updateHomeProgress() {
+  const solved = Object.keys(state.solvedPages).length;
+  const pct = (solved / 20) * 100;
+  document.getElementById('home-progress-bar').style.width = pct + '%';
+  document.getElementById('home-progress-text').textContent = solved + '/20';
+}
+
+// ============================================================
+// PAGE/HUNT SCREEN
+// ============================================================
+function renderPageScreen() {
+  const page = PAGES[state.currentPage];
+  const isSolved = !!state.solvedPages[page.id];
+  const mathDone = !!state.mathSolved[page.id];
+
+  document.getElementById('page-header-title').textContent = `PAGE ${state.currentPage + 1} OF 20`;
+  document.getElementById('page-solved-badge').style.display = isSolved ? 'inline' : 'none';
+  document.getElementById('clue-badge').textContent = `CLUE ${state.currentPage + 1}`;
+  document.getElementById('clue-instruction').textContent = page.clue;
+  document.getElementById('math-question').textContent = page.mathQ;
+  document.getElementById('math-input').value = '';
+  document.getElementById('math-result').textContent = '';
+  document.getElementById('math-result').className = 'math-result';
+  document.getElementById('word-input').value = '';
+  document.getElementById('word-hint').textContent = page.wordHint;
+
+  // Book page image
+  document.getElementById('book-page-img').src = page.imageFile;
+
+  // Show/hide elements based on state
+  const pageReveal = document.getElementById('page-reveal');
+  const wordArea = document.getElementById('word-submit-area');
+  const correctBanner = {textContent:'', className:'', classList:{add:()=>{}, remove:()=>{}}}; // replaced by inline feedback
+
+  const overlay = document.getElementById('page-blur-overlay');
+  const pageImg = document.getElementById('book-page-img');
+  if (mathDone || isSolved) {
+    pageReveal.classList.add('show');
+    document.getElementById('page-num-display').textContent = page.bookPage;
+    wordArea.style.display = 'block';
+    document.getElementById('math-box').style.opacity = '0.6';
+    // Remove blur
+    pageImg.classList.remove('blurred');
+    overlay.classList.add('hidden');
+  } else {
+    pageReveal.classList.remove('show');
+    wordArea.style.display = 'none';
+    // Apply blur
+    pageImg.classList.add('blurred');
+    overlay.classList.remove('hidden');
+  }
+
+  const wordFeedback = document.getElementById('word-feedback');
+  if (isSolved) {
+    document.getElementById('word-input').value = page.word;
+    document.getElementById('word-input').style.borderColor = '#4ADE80';
+    document.getElementById('word-check-btn').style.display = 'none';
+    if (wordFeedback) {
+      wordFeedback.textContent = '✓ Correct! Added to crossword.';
+      wordFeedback.style.color = '#4ADE80';
+    }
+  } else {
+    document.getElementById('word-input').value = '';
+    document.getElementById('word-input').style.borderColor = '';
+    document.getElementById('word-check-btn').style.display = '';
+    if (wordFeedback) wordFeedback.textContent = '';
+  }
+
+  // Page dots
+  renderPageDots();
+}
+
+function renderRedaction(page) {
+  const box = document.getElementById('redaction-box');
+  const img = document.getElementById('book-page-img');
+  const container = document.getElementById('book-page-container');
+
+  img.onload = function() {
+    const imgRect = img.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    const offsetX = imgRect.left - containerRect.left;
+    const offsetY = imgRect.top - containerRect.top;
+
+    box.style.left = (offsetX + page.redact.x * imgRect.width) + 'px';
+    box.style.top = (offsetY + page.redact.y * imgRect.height) + 'px';
+    box.style.width = (page.redact.w * imgRect.width) + 'px';
+    box.style.height = (page.redact.h * imgRect.height) + 'px';
+    box.style.display = 'block';
+  };
+
+  if (img.complete && img.naturalWidth) {
+    img.onload();
+  }
+}
+
+function renderPageDots() {
+  const container = document.getElementById('page-dots');
+  container.innerHTML = '';
+  PAGES.forEach((p, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'page-dot';
+    const isSolved = !!state.solvedPages[p.id];
+    if (i === state.currentPage) dot.classList.add('current');
+    if (isSolved) dot.classList.add('solved');
+    dot.title = `Page ${i+1}`;
+    dot.onclick = () => { state.currentPage = i; renderPageScreen(); };
+    container.appendChild(dot);
+  });
+}
+
+function checkMath() {
+  const page = PAGES[state.currentPage];
+  const rawVal = document.getElementById('math-input').value.trim();
+  const val = parseFloat(rawVal);
+  const result = document.getElementById('math-result');
+
+  if (!isNaN(val) && Math.abs(val - page.mathA) < 0.01) {
+    result.textContent = 'Correct!';
+    result.className = 'math-result correct';
+    state.mathSolved[page.id] = true;
+    saveState();
+    // Animate blur away
+    const img = document.getElementById('book-page-img');
+    const ov  = document.getElementById('page-blur-overlay');
+    img.classList.remove('blurred');
+    ov.classList.add('hidden');
+    setTimeout(() => {
+      document.getElementById('page-reveal').classList.add('show');
+      document.getElementById('page-num-display').textContent = page.bookPage;
+      document.getElementById('word-submit-area').style.display = 'block';
+      document.getElementById('math-box').style.opacity = '0.6';
+    }, 600);
+
+    // Check bonus unlock
+    checkBonusUnlock();
+  } else {
+    result.textContent = '✗ Try again!';
+    result.className = 'math-result wrong';
+    document.getElementById('math-input').style.animation = 'none';
+    setTimeout(() => document.getElementById('math-input').style.animation = '', 100);
+  }
+}
+
+function checkWord() {
+  const page = PAGES[state.currentPage];
+  const input = document.getElementById('word-input').value.trim().toUpperCase();
+  const banner = document.getElementById('word-correct-banner');
+
+  const fb = document.getElementById('word-feedback');
+  if (input === page.word) {
+    state.solvedPages[page.id] = page.word;
+    state.crosswordSolved[page.word] = true;
+    saveState();
+
+    // Show correct word in input, green feedback, hide check button
+    document.getElementById('word-input').value = page.word;
+    document.getElementById('word-input').style.borderColor = '#4ADE80';
+    document.getElementById('word-check-btn').style.display = 'none';
+    if (fb) { fb.textContent = '✓ Correct! Word added to your crossword.'; fb.style.color = '#4ADE80'; }
+
+    document.getElementById('page-solved-badge').style.display = 'inline';
+    renderPageDots();
+    updateHomeProgress();
+    checkBonusUnlock();
+
+    // Check for completion
+    if (Object.keys(state.solvedPages).length === 20) {
+      setTimeout(() => showCelebration(), 1500);
+    }
+  } else {
+    if (fb) { fb.textContent = '✗ Not quite — try again!'; fb.style.color = 'var(--red)'; }
+    document.getElementById('word-input').style.borderColor = 'var(--red)';
+    setTimeout(() => {
+      document.getElementById('word-input').style.borderColor = '';
+    }, 1200);
+  }
+}
+
+function prevPage() {
+  state.currentPage = Math.max(0, state.currentPage - 1);
+  renderPageScreen();
+}
+function nextPage() {
+  state.currentPage = Math.min(PAGES.length - 1, state.currentPage + 1);
+  renderPageScreen();
+}
+
+// Allow Enter key on inputs
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('math-input').addEventListener('keydown', e => { if(e.key==='Enter') checkMath(); });
+  document.getElementById('word-input').addEventListener('keydown', e => { if(e.key==='Enter') checkWord(); });
+});
+
+// ============================================================
+// CROSSWORD
+// ============================================================
+let xwGridData = {}; // "r,c" -> {letter, words, isCipher, clueNum}
+let selectedXwWord = null;
+
+function buildCrosswordData() {
+  xwGridData = {};
+  const numberedStarts = {};
+
+  // First pass: assign clue numbers
+  const starts = {};
+  CROSSWORD_LAYOUT.words.forEach(({word, row, col, dir}) => {
+    const key = `${row},${col}`;
+    if (!starts[key]) starts[key] = [];
+    starts[key].push({word, dir});
+  });
+
+  let clueNum = 1;
+  const startToNum = {};
+  Object.keys(starts).sort((a,b) => {
+    const [ar,ac] = a.split(',').map(Number);
+    const [br,bc] = b.split(',').map(Number);
+    return ar !== br ? ar - br : ac - bc;
+  }).forEach(key => {
+    startToNum[key] = clueNum++;
+  });
+
+  // Second pass: fill grid
+  CROSSWORD_LAYOUT.words.forEach(({word, row, col, dir}) => {
+    const startKey = `${row},${col}`;
+    const num = startToNum[startKey];
+    for (let i = 0; i < word.length; i++) {
+      const r = row + (dir==='V' ? i : 0);
+      const c = col + (dir==='H' ? i : 0);
+      const key = `${r},${c}`;
+      if (!xwGridData[key]) {
+        xwGridData[key] = { letter: word[i], words: [], isCipher: false, clueNum: null };
+      }
+      xwGridData[key].words.push({word, dir});
+      if (CIPHER_CELL_SET.has(key)) xwGridData[key].isCipher = true;
+      if (i === 0 && !xwGridData[key].clueNum) xwGridData[key].clueNum = num;
+    }
+  });
+}
+
+function renderCrossword() {
+  buildCrosswordData();
+  const grid = document.getElementById('crossword-grid');
+  grid.innerHTML = '';
+  grid.style.gridTemplateColumns = `repeat(${CROSSWORD_LAYOUT.cols}, 28px)`;
+  grid.style.gridTemplateRows = `repeat(${CROSSWORD_LAYOUT.rows}, 28px)`;
+
+  for (let r = 0; r < CROSSWORD_LAYOUT.rows; r++) {
+    for (let c = 0; c < CROSSWORD_LAYOUT.cols; c++) {
+      const key = `${r},${c}`;
+      const data = xwGridData[key];
+      const cell = document.createElement('div');
+
+      if (!data) {
+        cell.className = 'cell empty';
+      } else {
+        cell.className = 'cell';
+        if (data.isCipher) cell.classList.add('special');
+        if (data.clueNum) {
+          const numEl = document.createElement('div');
+          numEl.className = 'cell-number';
+          numEl.textContent = data.clueNum;
+          cell.appendChild(numEl);
+        }
+        // Show letter when any hunt word containing this cell is solved
+        const wordEntry = data.words.find(w => state.crosswordSolved[w.word]);
+        if (wordEntry) {
+          // Gold if this is also a cipher cell
+          if (data.isCipher) {
+            cell.classList.add('special-revealed');
+          } else {
+            cell.classList.add('correct');
+          }
+          cell.textContent = data.letter;
+          if (data.clueNum) {
+            const numEl = document.createElement('div');
+            numEl.className = 'cell-number';
+            numEl.textContent = data.clueNum;
+            cell.prepend(numEl);
+          }
+        }
+        cell.dataset.key = key;
+        cell.onclick = () => selectXwCell(key);
+      }
+      grid.appendChild(cell);
+    }
+  }
+
+  renderCrosswordClues();
+  updateXwProgress();
+}
+
+function selectXwCell(key) {
+  const data = xwGridData[key];
+  if (!data) return;
+  // Find associated word
+  const word = data.words[0]?.word;
+  if (word) {
+    selectedXwWord = word;
+    highlightWord(word);
+  }
+}
+
+function highlightWord(word) {
+  document.querySelectorAll('.cell').forEach(c => c.classList.remove('highlight', 'selected'));
+  const entry = CROSSWORD_LAYOUT.words.find(w => w.word === word);
+  if (!entry) return;
+  for (let i = 0; i < word.length; i++) {
+    const r = entry.row + (entry.dir==='V' ? i : 0);
+    const c = entry.col + (entry.dir==='H' ? i : 0);
+    const cell = document.querySelector(`[data-key="${r},${c}"]`);
+    if (cell) cell.classList.add('highlight');
+  }
+}
+
+
+function renderCrosswordClues() {
+  function renderList(clues, containerId) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = '';
+    clues.forEach(({num, word, desc}) => {
+      const div = document.createElement('div');
+      const isSolved = !!state.crosswordSolved[word];
+      div.className = 'clue-item' + (isSolved?' solved':'');
+      div.innerHTML = `<span class="clue-tick">${isSolved?'':''}</span><span><strong>${num}.</strong> ${desc} <em style="color:#999">(${word.length})</em></span>`;
+      div.onclick = () => { selectedXwWord = word; highlightWord(word); };
+      el.appendChild(div);
+    });
+  }
+  renderList(ACROSS_CLUES, 'clues-across');
+  renderList(DOWN_CLUES, 'clues-down');
+}
+
+function updateXwProgress() {
+  const solved = Object.keys(state.crosswordSolved).length;
+  const pct = (solved / 20) * 100;
+  document.getElementById('xw-progress-bar').style.width = pct + '%';
+  document.getElementById('xw-progress-label').textContent = `${solved}/20 words`;
+}
+
+// ============================================================
+// DECODER SCREEN
+// ============================================================
+function renderDecoder() {
+  // Cipher mechanic: show highlighted letters grouped into number-words
+  const grid = document.getElementById('special-words-grid');
+  grid.innerHTML = '';
+  const groups = CIPHER_GROUPS;
+  groups.forEach(group => {
+    const triggerWord = group.triggerWords[group.triggerWords.length - 1];
+    // Group unlocks when ALL trigger words are solved
+    const allSolved = group.triggerWords.every(w => !!state.crosswordSolved[w]);
+    const card = document.createElement('div');
+    card.className = 'special-word-card' + (allSolved ? '' : ' locked');
+    if (allSolved) {
+      card.innerHTML = `
+        <div class="sw-label">${group.encoded} (${group.triggerWords.length} letters found)</div>
+        <div class="sw-word">${group.encoded}</div>
+        <div style="font-size:0.78rem; color:#64748b; margin-top:6px; font-style:italic;">
+          Use the cipher table on paper to decode this word!
+        </div>
+      `;
+    } else {
+      const remaining = group.triggerWords.filter(w => !state.crosswordSolved[w]).length;
+      card.innerHTML = `
+        <div class="sw-label">${group.encoded.split('').map(()=>'?').join('')} (${remaining} words still needed)</div>
+        <div class="sw-word" style="color:#3d3d5c; font-size:1.4rem;">🔒</div>
+        <div class="sw-locked-text">Solve more crossword words to reveal!</div>
+      `;
+    }
+    grid.appendChild(card);
+  });
+
+  // Cipher table
+  const table = document.getElementById('cipher-table');
+  table.innerHTML = '';
+  Object.keys(CIPHER).forEach(enc => {
+    const plain = CIPHER[enc];
+    const cell = document.createElement('div');
+    cell.className = 'cipher-cell';
+    cell.innerHTML = `<div class="enc-letter">${enc}</div><div class="plain-letter">${plain}</div>`;
+    table.appendChild(cell);
+  });
+
+  // Padlock display
+  const display = document.getElementById('padlock-display');
+  display.innerHTML = '';
+  // Padlock always shows ? — boy enters PIN himself
+  ['?','?','?','?'].forEach(() => {
+    const div = document.createElement('div');
+    div.className = 'padlock-digit locked';
+    div.textContent = '?';
+    display.appendChild(div);
+  });
+}
+
+// ============================================================
+// BONUS CLUES
+// ============================================================
+function getSolvedCount() {
+  return Object.keys(state.solvedPages).length + Object.keys(state.mathSolved).length * 0; 
+  // count only fully solved pages
+}
+
+function checkBonusUnlock() {
+  const count = Object.keys(state.solvedPages).length;
+  const newUnlock = BONUS_CLUES.filter(c => c.unlockAfter <= count && c.unlockAfter > 0);
+  // Show toast for newly unlocked
+  const prev = parseInt(localStorage.getItem('lastBonusCount') || '0');
+  const newOnes = BONUS_CLUES.filter(c => c.unlockAfter <= count && c.unlockAfter > prev);
+  if (newOnes.length > 0) {
+    showToast('🥚 New bonus egg clue unlocked!');
+    localStorage.setItem('lastBonusCount', count);
+  }
+}
+
+function renderBonus() {
+  const solvedCount = Object.keys(state.solvedPages).length;
+  const grid = document.getElementById('egg-clues-grid');
+  grid.innerHTML = '';
+  BONUS_CLUES.forEach((clue, i) => {
+    const unlocked = clue.unlockAfter <= solvedCount;
+    const card = document.createElement('div');
+    card.className = 'egg-clue-card' + (unlocked ? '' : ' locked');
+    if (unlocked) {
+      card.innerHTML = `
+        <div class="egg-icon"><svg width="32" height="32"  viewBox="0 0 174 233" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-1392.03,-1264.02)">
+        <g>
+            <g transform="matrix(0.408684,0,0,0.402995,1112.61,1115.31)">
+                <path d="M895.765,376.759C1004.3,376.759 1100.12,536.596 1100.12,691.712C1100.12,846.829 1004.3,938.862 895.765,938.862C787.235,938.862 691.368,858.837 691.368,703.72C691.368,548.604 787.235,376.759 895.765,376.759Z" style="fill:none;stroke:currentColor;stroke-width:15.4px;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1105.01,1100.16)">
+                <path d="M740.088,528.389L755.696,542.999L790.281,517.237L820.677,549.168L852.878,522.413L889.41,554.83L930.439,521.263L967.678,550.22L991.286,514.426L1027.76,543.456L1035,530.743" style="fill:none;stroke:currentColor;stroke-width:14.8px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,2.42565e-17,-2.42565e-17,-0.224216,1100.83,1589.59)">
+                <path d="M748.334,576.21L790.281,517.237L820.677,549.168L851.265,505.306L885.875,546.587L922.876,502.516L958.861,548.152L994.081,524.045L1032.62,576.156" style="fill:none;stroke:currentColor;stroke-width:18.49px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.499776,0,0,-0.601683,1035.11,1684.84)">
+                <path d="M755.696,542.999L790.281,517.237L820.677,549.168L852.878,522.413L889.41,554.83L930.439,521.263L967.678,550.22L991.286,514.426L1027.76,543.456" style="fill:none;stroke:currentColor;stroke-width:15.07px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1097.2)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1258.19,1097.2)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,1100.41,1025.85)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,975.467,1025.85)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,898.88,1030.37)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,987.836,1029.27)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,776.74,992.704)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,730.168,993.015)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.17671,0,0,0.633689,647.423,964.272)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.09px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1132.13)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1258.19,1132.13)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,1100.41,1060.79)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.623326,0,0,0.530991,975.467,1060.79)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,898.88,1065.3)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.756786,0,0,0.530991,987.836,1065.2)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,776.549,1028.44)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.02665,0,0,0.589129,730.168,1027.95)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(1.19193,0,0,0.647064,636.558,989.54)">
+                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.04px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1097.2)">
+                <path d="M696.467,733.05C824.395,779.13 955.341,784.968 1081.12,738.527" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
+            </g>
+            <g transform="matrix(0.385203,0,0,0.422286,1135.03,1131.77)">
+                <path d="M696.467,733.05C824.395,779.13 955.341,784.968 1081.12,738.527" style="fill:none;stroke:currentColor;stroke-width:7.22px;stroke-linecap:square;"/>
+            </g>
+        </g>
+    </g>
+</svg></div>
+        <div>
+          <div class="egg-clue-text"><strong>Clue ${i+1} of 5:</strong> ${clue.text}</div>
+        </div>
+      `;
+    } else {
+      card.innerHTML = `
+        <div class="egg-icon" style="color:#3d3d5c;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></div>
+        <div>
+          <div class="egg-clue-text locked-text">Bonus clue ${i+1} — locked!</div>
+          <div class="egg-unlock-info">Unlock after solving ${clue.unlockAfter} pages (you've solved ${solvedCount})</div>
+        </div>
+      `;
+    }
+    grid.appendChild(card);
+  });
+}
+
+// ============================================================
+// CELEBRATION
+// ============================================================
+function showCelebration() {
+  showScreen('celebration');
+  const container = document.getElementById('confetti-container');
+  container.innerHTML = '';
+  const colours = ['#FFE135','#FF7F00','#FF69B4','#4CAF50','#2196F3','#9C27B0'];
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colours[Math.floor(Math.random() * colours.length)];
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    piece.style.animationDuration = (2 + Math.random() * 4) + 's';
+    piece.style.animationDelay = (Math.random() * 3) + 's';
+    container.appendChild(piece);
+  }
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+
+// ============================================================
+// PIN ENTRY
+// ============================================================
+const CORRECT_PIN = ['1','2','5','9'];
+
+function pinInput(el, pos) {
+  // Keep only last digit entered
+  let val = el.value.replace(/[^0-9]/g,'');
+  if (val.length > 1) val = val.slice(-1);
+  el.value = val;
+  el.classList.remove('wrong','correct');
+  document.getElementById('pin-feedback').textContent = '';
+  document.getElementById('pin-feedback').style.color = '';
+  // Auto-advance to next input
+  if (val && pos < 4) {
+    document.getElementById('pin-' + (pos+1)).focus();
+  }
+}
+
+function checkPin() {
+  const entered = [1,2,3,4].map(i => document.getElementById('pin-'+i).value.trim());
+  const allFilled = entered.every(v => v !== '');
+  const fb = document.getElementById('pin-feedback');
+
+  if (!allFilled) {
+    fb.textContent = 'Enter all 4 digits first!';
+    fb.style.color = '#94a3b8';
+    return;
+  }
+
+  if (entered.every((v, i) => v === CORRECT_PIN[i])) {
+    // Correct!
+    [1,2,3,4].forEach(i => document.getElementById('pin-'+i).classList.add('correct'));
+    fb.textContent = '✓ CORRECT! Now open the padlock!';
+    fb.style.color = '#4ADE80';
+    // Show neon celebration after short delay
+    setTimeout(() => {
+      document.getElementById('neon-solved').classList.add('show');
+    }, 600);
+  } else {
+    // Wrong
+    [1,2,3,4].forEach(i => {
+      const el = document.getElementById('pin-'+i);
+      el.classList.add('wrong');
+      setTimeout(() => el.classList.remove('wrong'), 500);
+    });
+    fb.textContent = '✗ Not quite — check your decoding and try again!';
+    fb.style.color = 'var(--red)';
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadState();
+buildCrosswordData();
+updateHomeProgress();
+showScreen('home');
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.log('SW failed:', err));
+  });
+}
+</script>
+</body>
+</html>
