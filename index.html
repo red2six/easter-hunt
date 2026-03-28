@@ -245,8 +245,15 @@
     display: flex;
     gap: 12px;
     margin: 6px 0;
+    align-items: center;
+  }
+  .step {
+    display: flex;
+    gap: 12px;
+    margin: 6px 0;
     align-items: flex-start;
   }
+  .step .step-num { margin-top: 2px; }
   .step-num {
     font-family: 'Comic Neue', cursive; font-weight: 700;
     font-size: 1.1rem;
@@ -459,7 +466,8 @@
   }
   .word-input {
     font-family: 'Comic Neue', cursive;
-    font-size: 1.49rem;
+    font-size: 2.53rem;
+    font-weight: 900;
     padding: 8px 12px;
     border: 2px solid var(--ink);
     border-radius: 6px;
@@ -858,7 +866,6 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-width: 600px;
   }
   .egg-clue-card {
     display: flex;
@@ -1271,115 +1278,47 @@
   <!-- ===== INSTRUCTIONS SCREEN ===== -->
   <div id="screen-instructions" class="screen" style="flex-direction:column; overflow:hidden;">
     <div style="padding:12px 20px 8px; flex-shrink:0;">
-      <h2 class="instructions-title">HOW TO PLAY</h2>
-      <div class="callout" style="margin:0; font-size:0.95rem; padding:8px 14px;">
-        <strong>🎯 Your mission:</strong> Solve 20 book-page puzzles, fill in the crossword, decode 4 secret words, and crack open the treasure chest!
+      <div class="callout" style="margin:0; font-size:1.19rem; padding:12px 18px; border-color:#C084FC; background:#1e1530; box-shadow:3px 3px 0 #C084FC, 0 0 16px #C084FC33;">
+        <strong>🎯 Your mission:</strong> Solve 20 book-page puzzles, fill in the crossword, decode 4 scrambled words, and crack open the treasure chest!
       </div>
     </div>
     <!-- Two-column layout -->
     <div style="display:flex; flex:1; gap:0; overflow:hidden; min-height:0;">
       <!-- Left column: Step by step -->
       <div style="flex:1; padding:12px 16px 12px 20px; overflow-y:auto; border-right:1px solid #2d2d44;">
-        <h3 style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1.2rem; color:var(--orange); margin-bottom:10px; letter-spacing:1px;">THE HUNT — STEP BY STEP</h3>
-        <div class="step" style="margin:8px 0;"><span class="step-num">1</span><span>You'll be shown a page from a Wimpy Kid book. Part of the text is <strong>blacked out</strong> — that's your target word!</span></div>
-        <div class="step" style="margin:8px 0;"><span class="step-num">2</span><span>Answer the <strong>maths question</strong>. The correct answer reveals the <strong>exact page number</strong> in the real book.</span></div>
-        <div class="step" style="margin:8px 0;"><span class="step-num">3</span><span>Find the actual book, turn to that page, and read the blacked-out word. <strong>Figure out which book it is yourself</strong> — that's the challenge!</span></div>
-        <div class="step" style="margin:8px 0;"><span class="step-num">4</span><span>Type the hidden word into the <strong>HUNT</strong> page word box — if correct it goes straight into the crossword. Check progress under <strong>CROSSWORD</strong> tab!</span></div>
-        <div class="step" style="margin:8px 0;"><span class="step-num">5</span><span>As you solve words, <strong>gold squares</strong> appear in the crossword. These are scrambled — write them down in order and use the cipher table in <strong>DECODER</strong> to decode each letter on paper.</span></div>
-        <div class="step" style="margin:8px 0;"><span class="step-num">6</span><span>The 4 decoded words are number words. Enter their digits in the <strong>PADLOCK CODE</strong> box to check — then use the code on the real padlock! 🏆</span></div>
+        <h3 style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1.2rem; color:#C084FC; margin-bottom:10px; letter-spacing:1px; text-shadow:0 0 10px #C084FC66;">THE HUNT — STEP BY STEP</h3>
+        <div class="step" style="margin:8px 0;"><span class="step-num">1</span><span style="font-size:1.19rem; line-height:1.45;">You'll be shown a page from a Wimpy Kid book. Part of the text is <strong>blacked out</strong> — that's your target word!</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">2</span><span style="font-size:1.19rem; line-height:1.45;">Answer the <strong>maths question</strong>. The correct answer reveals the <strong>exact page number</strong> in the real book.</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">3</span><span style="font-size:1.19rem; line-height:1.45;">Find the actual book, turn to that page, and read the blacked-out word. <strong>Figure out which book it is yourself</strong> — that's the challenge!</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">4</span><span style="font-size:1.19rem; line-height:1.45;">Type the hidden word into the <strong>HUNT</strong> page word box — if correct it goes straight into the crossword. Check progress under <strong>CROSSWORD</strong> tab!</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">5</span><span style="font-size:1.19rem; line-height:1.45;">As you solve words, <strong>gold squares</strong> appear in the crossword. These are scrambled — write them down in order and use the cipher table in <strong>DECODER</strong> to decode each letter on paper.</span></div>
+        <div class="step" style="margin:8px 0;"><span class="step-num">6</span><span style="font-size:1.19rem; line-height:1.45;">The 4 decoded words are number words. Enter their digits in the <strong>PADLOCK CODE</strong> box to check — then use the code on the real padlock! 🏆</span></div>
       </div>
       <!-- Right column: Tips + Bonus Eggs -->
       <div style="flex:1; padding:12px 20px 12px 16px; overflow-y:auto;">
-        <h3 style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1.2rem; color:var(--orange); margin-bottom:10px; letter-spacing:1px;">TIPS FROM GREG</h3>
-        <div class="callout" style="margin-bottom:10px; font-size:0.95rem;">
-          💡 Some book page numbers appear in <em>more than one book</em>. The scene on the page should tell you which book to look in!
-        </div>
-        <div class="callout" style="margin-bottom:10px; font-size:0.95rem;">
-          💡 The crossword is always available from the top menu. Come back to it after each word!
+        <h3 style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1.2rem; color:#C084FC; margin-bottom:10px; letter-spacing:1px; text-shadow:0 0 10px #C084FC66;">TIPS FROM GREG</h3>
+        <div class="callout" style="margin-bottom:10px; font-size:0.95rem; border-color:#38BDF844; background:#0d1e28;">
+          🥚 <strong style="color:#38BDF8;">BONUS EGGS:</strong> Hidden around the house are special envelopes with football cards and Easter eggs with treats. Bonus clues unlock as you solve more pages — check the <strong>EGGS</strong> tab!
         </div>
         <div class="callout special" style="margin-bottom:10px; font-size:0.95rem;">
           ⭐ <strong>GOLD SQUARES:</strong> Certain squares glow gold as you solve more words. Write down all gold letters in order — they spell scrambled number words. Decode each letter using the cipher table in the DECODER tab!
         </div>
-        <h3 style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1.2rem; color:var(--orange); margin:14px 0 10px; letter-spacing:1px;">BONUS HIDDEN EGGS <span style="display:inline-flex;vertical-align:middle;color:#38BDF8;"><svg width="20" height="20"  viewBox="0 0 174 233" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
-    <g transform="matrix(1,0,0,1,-1392.03,-1264.02)">
-        <g>
-            <g transform="matrix(0.408684,0,0,0.402995,1112.61,1115.31)">
-                <path d="M895.765,376.759C1004.3,376.759 1100.12,536.596 1100.12,691.712C1100.12,846.829 1004.3,938.862 895.765,938.862C787.235,938.862 691.368,858.837 691.368,703.72C691.368,548.604 787.235,376.759 895.765,376.759Z" style="fill:none;stroke:currentColor;stroke-width:15.4px;"/>
-            </g>
-            <g transform="matrix(0.422286,0,0,0.422286,1105.01,1100.16)">
-                <path d="M740.088,528.389L755.696,542.999L790.281,517.237L820.677,549.168L852.878,522.413L889.41,554.83L930.439,521.263L967.678,550.22L991.286,514.426L1027.76,543.456L1035,530.743" style="fill:none;stroke:currentColor;stroke-width:14.8px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.422286,2.42565e-17,-2.42565e-17,-0.224216,1100.83,1589.59)">
-                <path d="M748.334,576.21L790.281,517.237L820.677,549.168L851.265,505.306L885.875,546.587L922.876,502.516L958.861,548.152L994.081,524.045L1032.62,576.156" style="fill:none;stroke:currentColor;stroke-width:18.49px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.499776,0,0,-0.601683,1035.11,1684.84)">
-                <path d="M755.696,542.999L790.281,517.237L820.677,549.168L852.878,522.413L889.41,554.83L930.439,521.263L967.678,550.22L991.286,514.426L1027.76,543.456" style="fill:none;stroke:currentColor;stroke-width:15.07px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1097.2)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.422286,0,0,0.422286,1258.19,1097.2)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.623326,0,0,0.530991,1100.41,1025.85)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.623326,0,0,0.530991,975.467,1025.85)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.756786,0,0,0.530991,898.88,1030.37)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.756786,0,0,0.530991,987.836,1029.27)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(1.02665,0,0,0.589129,776.74,992.704)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(1.02665,0,0,0.589129,730.168,993.015)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(1.17671,0,0,0.633689,647.423,964.272)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.09px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1132.13)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.422286,0,0,0.422286,1258.19,1132.13)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.623326,0,0,0.530991,1100.41,1060.79)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.623326,0,0,0.530991,975.467,1060.79)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:5.04px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.756786,0,0,0.530991,898.88,1065.3)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.756786,0,0,0.530991,987.836,1065.2)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:4.46px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(1.02665,0,0,0.589129,776.549,1028.44)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(1.02665,0,0,0.589129,730.168,1027.95)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.48px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(1.19193,0,0,0.647064,636.558,989.54)">
-                <ellipse cx="706.881" cy="695.902" rx="7.323" ry="12.933" style="fill:none;stroke:currentColor;stroke-width:3.04px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.422286,0,0,0.422286,1103.1,1097.2)">
-                <path d="M696.467,733.05C824.395,779.13 955.341,784.968 1081.12,738.527" style="fill:none;stroke:currentColor;stroke-width:6.91px;stroke-linecap:square;"/>
-            </g>
-            <g transform="matrix(0.385203,0,0,0.422286,1135.03,1131.77)">
-                <path d="M696.467,733.05C824.395,779.13 955.341,784.968 1081.12,738.527" style="fill:none;stroke:currentColor;stroke-width:7.22px;stroke-linecap:square;"/>
-            </g>
-        </g>
-    </g>
-</svg></span></h3>
-        <div class="callout" style="font-size:0.95rem;">
-          Hidden around the house are <strong>special envelopes with football cards</strong> and <strong>Easter eggs with treats</strong>. Bonus clues unlock as you solve more pages — check the <strong>EGGS</strong> tab!
+        <div class="callout" style="margin-bottom:10px; font-size:0.95rem; border-color:#C084FC44; background:#1e1525;">
+          📚 <strong style="color:#C084FC;">BOOKS YOU'LL NEED</strong> — get them all ready before you start!<br><br>
+          <span style="line-height:2;">
+            • <em>Diary of a Wimpy Kid</em><br>
+            • <em>Rodrick Rules</em><br>
+            • <em>The Last Straw</em><br>
+            • <em>Dog Days</em><br>
+            • <em>The Ugly Truth</em><br>
+            • <em>Cabin Fever</em><br>
+            • <em>The Third Wheel</em><br>
+            • <em>Hard Luck</em><br>
+            • <em>The Long Haul</em><br>
+            • <em>Old School</em><br>
+            • <em>Double Down</em><br>
+            • <em>The Getaway</em>
+          </span>
         </div>
       </div>
     </div>
@@ -1543,7 +1482,7 @@
   <div id="screen-bonus" class="screen" style="flex-direction:row; overflow:hidden;">
 
     <!-- Left: title + clue cards -->
-    <div style="flex:1.1; padding:16px 16px 16px 24px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
+    <div style="flex:1.1; min-width:0; padding:16px 16px 16px 24px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
       <h2 class="bonus-title" style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
         <span style="color:#38BDF8;display:flex;"><svg width="36" height="36"  viewBox="0 0 174 233" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
     <g transform="matrix(1,0,0,1,-1392.03,-1264.02)">
@@ -1633,8 +1572,8 @@
     </div>
 
     <!-- Right: Greg Easter image -->
-    <div style="flex:0.9; display:flex; align-items:center; justify-content:center; padding:12px 20px 12px 8px; overflow:hidden; background:#181825;">
-      <img src="greggeaster.jpg" alt="Greg's Easter Hunt" 
+    <div style="flex:0.9; min-width:0; display:flex; align-items:center; justify-content:center; padding:12px 20px 12px 8px; overflow:hidden; background:#181824;">
+      <img src="greggeaster.jpg" alt="Greg's Easter Hunt"
            style="max-width:100%; max-height:100%; object-fit:contain; display:block;">
     </div>
 
@@ -1940,7 +1879,7 @@
             </g>
         </g>
     </g>
-</svg><span class="nav-label">EGGS</span></button>
+</svg><span class="nav-label">EGGS</span><span id="egg-counter-badge" style="display:none; background:#38BDF8; color:#0d0d1a; font-family:'Comic Neue',cursive; font-weight:900; font-size:0.75rem; border-radius:50%; width:18px; height:18px; align-items:center; justify-content:center; margin-left:2px; box-shadow:0 0 6px #38BDF8aa; flex-shrink:0;"></span></button>
     <button class="nav-item" id="nav-instructions" onclick="showScreen('instructions')"><svg width="50" height="50" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="13" r="10"/><path d="M10 10C10 8.3 11.3 7 13 7C14.7 7 16 8.3 16 10C16 11.5 15 12.5 13.5 13.2C13.2 13.4 13 13.7 13 14V15"/><circle cx="13" cy="18" r="0.8" fill="currentColor" stroke="none"/></svg><span class="nav-label">HELP</span></button>
   </nav>
 
@@ -2713,13 +2652,16 @@ function getSolvedCount() {
 
 function checkBonusUnlock() {
   const count = Object.keys(state.solvedPages).length;
-  const newUnlock = BONUS_CLUES.filter(c => c.unlockAfter <= count && c.unlockAfter > 0);
-  // Show toast for newly unlocked
-  const prev = parseInt(localStorage.getItem('lastBonusCount') || '0');
-  const newOnes = BONUS_CLUES.filter(c => c.unlockAfter <= count && c.unlockAfter > prev);
-  if (newOnes.length > 0) {
-    showToast('🥚 New bonus egg clue unlocked!');
-    localStorage.setItem('lastBonusCount', count);
+  // Update the egg counter badge — shows number of revealed clues
+  const revealed = BONUS_CLUES.filter(c => c.unlockAfter <= count).length;
+  const badge = document.getElementById('egg-counter-badge');
+  if (badge) {
+    if (revealed > 0) {
+      badge.textContent = revealed;
+      badge.style.display = 'inline-flex';
+    } else {
+      badge.style.display = 'none';
+    }
   }
 }
 
@@ -2916,6 +2858,7 @@ function checkPin() {
 loadState();
 buildCrosswordData();
 updateHomeProgress();
+checkBonusUnlock();
 showScreen('home');
 </script>
 
