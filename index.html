@@ -1229,12 +1229,12 @@
   @keyframes neonFadeIn { 0%,60%{opacity:0} 100%{opacity:1} }
 
   @keyframes beginPulse {
-    0%,100% { box-shadow: 0 0 10px #C084FC88, 0 0 24px #C084FC44, 3px 3px 0 #7c3aed; }
-    50%      { box-shadow: 0 0 22px #C084FCcc, 0 0 48px #C084FC99, 3px 3px 0 #7c3aed; }
+    0%,100% { box-shadow: 0 0 10px #FFE13588, 0 0 24px #FFE13544, 3px 3px 0 #b8860b; }
+    50%      { box-shadow: 0 0 22px #FFE135cc, 0 0 48px #FFE13599, 3px 3px 0 #b8860b; }
   }
   @keyframes beginTextFlash {
-    0%,100% { text-shadow: 0 0 12px #C084FCcc, 0 0 28px #C084FC88; opacity: 1; }
-    50%      { text-shadow: 0 0 24px #fff, 0 0 48px #C084FC, 0 0 80px #C084FCcc; opacity: 0.82; }
+    0%,100% { text-shadow: 0 0 12px #FFE135cc, 0 0 28px #FFE13588; opacity: 1; }
+    50%      { text-shadow: 0 0 24px #fff, 0 0 48px #FFE135, 0 0 80px #FFE135cc; opacity: 0.82; }
   }
   .begin-btn {
     position: absolute;
@@ -1243,8 +1243,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #1a0e2e;
-    border: 3px solid #C084FC;
+    gap: 12px;
+    background: #1a1a00;
+    border: 3px solid #FFE135;
     border-radius: 16px;
     padding: 20px 35px 20px 35px;
     cursor: pointer;
@@ -1259,7 +1260,7 @@
     font-weight: 700;
     font-size: 2.8rem;
     letter-spacing: 2px;
-    color: #C084FC;
+    color: #FFE135;
     white-space: nowrap;
     animation: beginTextFlash 1.4s ease-in-out infinite;
   }
@@ -1294,7 +1295,10 @@
            style="max-width:100%; max-height:100%; object-fit:contain; display:block;">
       <!-- BEGIN HERE button — navigates to HELP/instructions screen -->
       <button class="begin-btn" onclick="showScreen('instructions')">
-        <span class="begin-btn-text">BEGIN HERE! →</span>
+        <svg width="40" height="40" viewBox="0 0 300 297" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;flex-shrink:0;color:#FFE135;filter:drop-shadow(0 0 6px #FFE135aa);">
+          <g transform="matrix(1,0,0,1,-326.453,-1215.89)"><g transform="matrix(1,0,0,1,-343.849,168.845)"><g transform="matrix(1,0,0,1,80.8186,987.611)"><path d="M667.335,280.43C657.405,288.492 648.03,297.443 639.188,307.246" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1.17559,0,0,1.78827,-5.04815,790.549)"><path d="M667.335,280.43C656.726,288.178 647.407,297.154 639.188,307.246" style="fill:none;stroke:currentColor;stroke-width:4.13px;"/></g><g transform="matrix(1,0,0,1,80.8186,987.611)"><path d="M643.374,212.555C626.796,185.855 590.482,202.284 592.707,227.594C595.239,256.411 631.661,263.451 649.486,242.8" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1,0,0,1,80.8186,987.611)"><path d="M702.207,292.948C732.223,275.408 762.004,277.033 791.607,293.251" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1.00989,0,0,0.922452,74.6027,1003.58)"><ellipse cx="739.087" cy="179.769" rx="6.074" ry="9.637" style="fill:none;stroke:currentColor;stroke-width:6.46px;"/></g><g transform="matrix(0.92562,-0.111728,0.0885854,0.733891,218.968,1117.97)"><ellipse cx="739.087" cy="179.769" rx="6.074" ry="9.637" style="fill:none;stroke:currentColor;stroke-width:7.43px;"/></g><g transform="matrix(1,0,0,1,84.7161,989.896)"><path d="M629.924,114.996C650.279,107.662 670.471,102.407 689.255,115.037" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1,0,0,1,80.8186,989.896)"><path d="M640.017,74.149C658.944,84.529 681.318,95.825 693.153,115.037" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1,0,0,1,80.8186,987.611)"><path d="M716.536,62.559C704.609,77.22 698.31,87.331 693.153,115.037" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1,0,0,1,80.8186,987.611)"><path d="M824.353,207.253C858.413,205.454 882.674,205.27 886.047,232.258C877.375,260.79 851.641,258.835 824.687,254.699" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1,0,0,1,80.8186,987.611)"><path d="M821.576,130.219C785.385,97.978 726.78,99.641 693.153,120.479C659.526,141.317 643.139,180.703 645.715,223.744C656.591,328.025 794.325,352.387 853.936,259.455" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g></g></g>
+        </svg>
+        <span class="begin-btn-text">START HERE! →</span>
       </button>
     </div>
 
