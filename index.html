@@ -1227,6 +1227,39 @@
     animation: neonFadeIn 3s ease forwards;
   }
   @keyframes neonFadeIn { 0%,60%{opacity:0} 100%{opacity:1} }
+
+  @keyframes beginPulse {
+    0%,100% { box-shadow: 0 0 10px #C084FC88, 0 0 24px #C084FC44, 3px 3px 0 #7c3aed; }
+    50%      { box-shadow: 0 0 22px #C084FCcc, 0 0 48px #C084FC99, 3px 3px 0 #7c3aed; }
+  }
+  .begin-btn {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1a0e2e;
+    border: 2px solid #C084FC;
+    border-radius: 12px;
+    padding: 10px 20px 10px 16px;
+    cursor: pointer;
+    animation: beginPulse 2s ease-in-out infinite;
+    z-index: 10;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .begin-btn:active { transform: scale(0.96); }
+  .begin-btn-icon { font-size: 1.6rem; line-height:1; }
+  .begin-btn-text {
+    font-family: 'Comic Neue', cursive;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 1px;
+    color: #C084FC;
+    text-shadow: 0 0 12px #C084FCcc, 0 0 28px #C084FC88;
+    white-space: nowrap;
+  }
   .neon-pin {
     font-family: 'Comic Neue', cursive;
     font-weight: 700;
@@ -1256,6 +1289,11 @@
     <div style="position:relative; width:100%; flex:1; min-height:0; display:flex; align-items:center; justify-content:center; overflow:hidden;">
       <img src="gregg_main_page.jpg" alt="Greg's Easter Hunt" 
            style="max-width:100%; max-height:100%; object-fit:contain; display:block;">
+      <!-- BEGIN HERE button — navigates to HELP/instructions screen -->
+      <button class="begin-btn" onclick="showScreen('instructions')">
+        <span class="begin-btn-icon">🎯</span>
+        <span class="begin-btn-text">BEGIN HERE! →</span>
+      </button>
     </div>
 
     <!-- Start CTA hint -->
@@ -1287,18 +1325,20 @@
       <!-- Left column: Step by step -->
       <div style="flex:1; padding:12px 16px 12px 20px; overflow-y:auto; border-right:1px solid #2d2d44;">
         <h3 style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1.2rem; color:#C084FC; margin-bottom:10px; letter-spacing:1px; text-shadow:0 0 10px #C084FC66;">THE HUNT — STEP BY STEP</h3>
+        <div class="step" style="margin:8px 0; border-left:3px solid #F87171; padding-left:8px;"><span class="step-num" style="background:#F87171;">!</span><span style="font-size:1.19rem; line-height:1.45;"><strong style="color:#F87171;">IMPORTANT — before you start:</strong> Collect <strong>all 10 Wimpy Kid books</strong> and keep them close! You'll need to search through them to find hidden words. Check the book list on the right — do not begin until you have them all ready!</span></div>
         <div class="step" style="margin:8px 0;"><span class="step-num">1</span><span style="font-size:1.19rem; line-height:1.45;">You'll be shown a page from a Wimpy Kid book. Part of the text is <strong>blacked out</strong> — that's your target word!</span></div>
         <div class="step" style="margin:8px 0;"><span class="step-num">2</span><span style="font-size:1.19rem; line-height:1.45;">Answer the <strong>maths question</strong>. The correct answer reveals the <strong>exact page number</strong> in the real book.</span></div>
         <div class="step" style="margin:8px 0;"><span class="step-num">3</span><span style="font-size:1.19rem; line-height:1.45;">Find the actual book, turn to that page, and read the blacked-out word. <strong>Figure out which book it is yourself</strong> — that's the challenge!</span></div>
         <div class="step" style="margin:8px 0;"><span class="step-num">4</span><span style="font-size:1.19rem; line-height:1.45;">Type the hidden word into the <strong>HUNT</strong> page word box — if correct it goes straight into the crossword. Check progress under <strong>CROSSWORD</strong> tab!</span></div>
         <div class="step" style="margin:8px 0;"><span class="step-num">5</span><span style="font-size:1.19rem; line-height:1.45;">As you solve words, <strong>gold squares</strong> appear in the crossword. These are scrambled — write them down in order and use the cipher table in <strong>DECODER</strong> to decode each letter on paper.</span></div>
         <div class="step" style="margin:8px 0;"><span class="step-num">6</span><span style="font-size:1.19rem; line-height:1.45;">The 4 decoded words are number words. Enter their digits in the <strong>PADLOCK CODE</strong> box to check — then use the code on the real padlock! 🏆</span></div>
+        <div class="step" style="margin:8px 0; border-left:3px solid #4ADE80; padding-left:8px;"><span class="step-num" style="background:#4ADE80; color:#0a0a0a;">→</span><span style="font-size:1.19rem; line-height:1.45;"><strong style="color:#4ADE80;">Ready? Tap <strong style="color:#FF7F00;">HUNT</strong> in the menu above to start your adventure!</strong> Good luck! 🐣</span></div>
       </div>
       <!-- Right column: Tips + Bonus Eggs -->
       <div style="flex:1; padding:12px 20px 12px 16px; overflow-y:auto;">
         <h3 style="font-family:'Comic Neue',cursive; font-weight:700; font-size:1.2rem; color:#C084FC; margin-bottom:10px; letter-spacing:1px; text-shadow:0 0 10px #C084FC66;">TIPS FROM GREG</h3>
         <div class="callout" style="margin-bottom:10px; font-size:0.95rem; border-color:#38BDF844; background:#0d1e28;">
-          🥚 <strong style="color:#38BDF8;">BONUS EGGS:</strong> Hidden around the house are special envelopes with football cards and Easter eggs with treats. Bonus clues unlock as you solve more pages — check the <strong>EGGS</strong> tab!
+          🥚 <strong style="color:#38BDF8;">BONUS EGGS:</strong> Hidden around the house are special surprises! Bonus clues unlock as you solve more pages — check the <strong>EGGS</strong> tab!
         </div>
         <div class="callout special" style="margin-bottom:10px; font-size:0.95rem;">
           ⭐ <strong>GOLD SQUARES:</strong> Certain squares glow gold as you solve more words. Write down all gold letters in order — they spell scrambled number words. Decode each letter using the cipher table in the DECODER tab!
@@ -1565,8 +1605,8 @@
         BONUS EGG HUNT!
       </h2>
       <p style="margin:0 0 8px; font-size:0.95rem; color:var(--text-secondary); line-height:1.5; flex-shrink:0;">
-        Hidden around the house are <strong>5 special envelopes with football cards</strong>!<br>
-        Clues unlock as you solve more pages. Find all 5 for extra treats!
+        Hidden around the house are <strong>5 special surprises</strong>!<br>
+        Clues unlock as you solve more pages. Find all 5!
       </p>
       <div class="egg-clues-grid" id="egg-clues-grid"></div>
     </div>
@@ -1901,10 +1941,10 @@ const PAGES = [
   {
     id:1, bookPage:127, imageFile:'page_1.jpg',
     word:'PATEL', wordHint:'_ _ _ _ _ (5 letters)',
-    clue:"The basketball coach ran the team through plays that were supposed to make scoring easy. They went five on three, then two, then one... and STILL couldn't score! Find the blacked-out name of the coach who drew up those plays.",
-    mathQ:"Place value: 7,549 = 7,000 + ___ + 40 + 9\n\nWhat is the missing number?",
-    mathA:500,
-    mathHint:"Think about the hundreds column.",
+    clue:"The basketball coach ran the team through plays that were supposed to make scoring easy. They went five on three, then two, then one... and STILL couldn't score! Find the blacked-out word!",
+    mathQ:"540 ÷ 6 = ?",
+    mathA:90,
+    mathHint:"Think about 54 ÷ 6 first.",
     redact:{x:0.14, y:0.42, w:0.28, h:0.058}
   },
   {
@@ -1919,7 +1959,7 @@ const PAGES = [
   {
     id:3, bookPage:82, imageFile:'page_3.jpg',
     word:'RENEGADES', wordHint:'_ _ _ _ _ _ _ _ _ (9 letters)',
-    clue:"Rodrick's band called some clubs they'd never heard of them before. One club owner knew EXACTLY who Löded Diper was! Find the name of the famous Rock Club written in the text.",
+    clue:"Rodrick's band called some clubs they'd never heard of them before. One club owner knew EXACTLY who Löded Diper was! Find the blacked-out word!",
     mathQ:"2962 × 47 = ?",
     mathA:139214,
     mathHint:"Use long multiplication. Try 2962 × 40 = 118,480 then add 2962 × 7 = 20,734.",
@@ -1928,7 +1968,7 @@ const PAGES = [
   {
     id:4, bookPage:137, imageFile:'page_4.jpg',
     word:'FESTIVAL', wordHint:'_ _ _ _ _ _ _ _ (8 letters)',
-    clue:"Löded Diper are planning to make money by selling merchandise. Rodrick says every band that performs at a certain event has a merch table in the parking lot. Find the name of that event!",
+    clue:"Löded Diper are planning to make money by selling merchandise. Rodrick says every band that performs at a certain event has a merch table in the parking lot. Find the blacked-out word!",
     mathQ:"The Rock n Rowdy festival had 46 bands performing.\nEach band played a set of 6 songs.\n\nHow many songs were performed at the festival in total?",
     mathA:276,
     mathHint:"46 × 6. Try 40 × 6 = 240, then add 6 × 6 = 36.",
@@ -1937,16 +1977,16 @@ const PAGES = [
   {
     id:5, bookPage:143, imageFile:'page_5.jpg',
     word:'BONFIRE', wordHint:'_ _ _ _ _ _ _ (7 letters)',
-    clue:"The family needs to find Rodrick before they can all go to the beach for a special night event. Read the very first sentence — it mentions two things happening on the beach. Find the word for the outdoor fire!",
-    mathQ:"Felix has 81 marbles. He divides them equally into 3 bags.\n\nHow many marbles are in each bag?",
-    mathA:27,
-    mathHint:"81 ÷ 3 = ? Think: 3 × what = 81?",
+    clue:"The family needs to find Rodrick before they can all go to the beach for a special night event. Read the very first sentence — it mentions two things happening on the beach. Find the blacked-out word!",
+    mathQ:"The TOTAL cost of a school trip for 12 pupils is £780.\nThe TOTAL cost includes TRAVEL, FOOD and HOTEL.\nFor ONE pupil, the TRAVEL cost is £27 and FOOD cost is £16.\n\nHow much is the HOTEL cost for ONE pupil?",
+    mathA:22,
+    mathHint:"First find the total cost per pupil, then subtract travel and food.",
     redact:{x:0.28, y:0.04, w:0.28, h:0.058}
   },
   {
     id:6, bookPage:29, imageFile:'page_6.jpg',
     word:'URINAL', wordHint:'_ _ _ _ _ _ (6 letters)',
-    clue:"Greg's sock had a very bad day at the airport! The hand dryer was way too powerful and the sock went flying across the bathroom. Read the bottom paragraph to find where it ended up.",
+    clue:"Greg's sock had a very bad day at the airport! The hand dryer was way too powerful and the sock went flying across the bathroom. Find the blacked-out word!",
     mathQ:"At the airport Greg counted 6 departure gates.\nEach gate had 48 seats in the waiting area.\n\nHow many seats were there altogether?",
     mathA:288,
     mathHint:"6 × 48. Try 6 × 40 = 240, then add 6 × 8 = 48.",
@@ -1955,7 +1995,7 @@ const PAGES = [
   {
     id:7, bookPage:61, imageFile:'page_7.jpg',
     word:'RESELLING', wordHint:'_ _ _ _ _ _ _ _ _ (9 letters)',
-    clue:"Fudgedogs were a massive hit in the school cafeteria! Kids in the early lunch periods were buying them all up and then doing something very clever with them to make money. What were they doing?",
+    clue:"Fudgedogs were a massive hit in the school cafeteria! Kids in the early lunch periods were buying them all up and then doing something very clever with them to make money. Find the blacked-out word!",
     mathQ:"15% of 640 = ?",
     mathA:96,
     mathHint:"Find 10% first (= 64), then find 5% (= 32). Add them together.",
@@ -1964,7 +2004,7 @@ const PAGES = [
   {
     id:8, bookPage:77, imageFile:'page_8.jpg',
     word:'REPUTATION', wordHint:'_ _ _ _ _ _ _ _ _ _ (10 letters)',
-    clue:"Greg is thinking about what happens when famous people let their name be used for something embarrassing. Look at the enormous building in the illustration and read the last word of the top paragraph!",
+    clue:"Greg is thinking about what happens when famous people let their name be used for something embarrassing. Look at the enormous building in the illustration and find the blacked-out word!",
     mathQ:"807 × 8 = ?",
     mathA:6456,
     mathHint:"Try 800 × 8 = 6,400 first, then add 7 × 8.",
@@ -1973,7 +2013,7 @@ const PAGES = [
   {
     id:9, bookPage:53, imageFile:'page_9.jpg',
     word:'CELEBRITY', wordHint:'_ _ _ _ _ _ _ _ _ (9 letters)',
-    clue:"Greg is upset because his parents forgot his birthday! He talks about what your birthday is supposed to feel like — like a really famous, important person. Find the word he uses!",
+    clue:"Greg is upset because his parents forgot his birthday! He talks about what your birthday is supposed to feel like — like a really famous, important person. Find the blacked-out word!",
     mathQ:"Greg's class voted for their favourite Wimpy Kid book.\nThe votes were: 34, 28, 19, 41 and 38.\n\nWhat was the total number of votes cast?",
     mathA:160,
     mathHint:"Add all five numbers. Try 34 + 28 = 62, then 62 + 19 = 81, then keep going.",
@@ -1982,7 +2022,7 @@ const PAGES = [
   {
     id:10, bookPage:137, imageFile:'page_10.jpg',
     word:'CUPCAKES', wordHint:'_ _ _ _ _ _ _ _ (8 letters)',
-    clue:"Greg and Rowley spent the whole afternoon trapped at a random kid's birthday party. The parents were really nice though — look at the bottom paragraph to find out what the mum sent them home with!",
+    clue:"Greg and Rowley spent the whole afternoon trapped at a random kid's birthday party. The parents were really nice though and let them take home some treats. Find the blacked-out word!",
     mathQ:"The birthday party had 9 tables with 8 chairs at each table.\nThere were also 12 extra chairs against the wall.\n\nHow many chairs were there altogether?",
     mathA:84,
     mathHint:"9 × 8 = 72 chairs at tables. Then add the 12 extra ones.",
@@ -1991,7 +2031,7 @@ const PAGES = [
   {
     id:11, bookPage:77, imageFile:'page_11.jpg',
     word:'SPRINKLER', wordHint:'_ _ _ _ _ _ _ _ _ (9 letters)',
-    clue:"Greg is clearing snow from a driveway using a hose — and it's working brilliantly! Then he spots something leaning against the house and gets an even better idea. What did he spot?",
+    clue:"Greg is clearing snow from a driveway using a hose — and it's working brilliantly! Then he spots something leaning against the house and gets an even better idea. Find the blacked-out word!",
     mathQ:"Greg cleared a rectangular driveway 12 metres long and 3.5 metres wide.\n\nWhat is the area of the driveway in square metres?",
     mathA:42,
     mathHint:"Area = length × width. Try 12 × 3.5.",
@@ -2000,7 +2040,7 @@ const PAGES = [
   {
     id:12, bookPage:143, imageFile:'page_12.jpg',
     word:'LEISURE', wordHint:'_ _ _ _ _ _ _ (7 letters)',
-    clue:"Rodrick tried to give an elderly lady a lift home in the Löded Diper van — but she refused to get in! Read the very first line of text to find the name of the place she was going back to.",
+    clue:"Rodrick tried to give an elderly lady a lift home in the Löded Diper van — but she refused to get in! Find the blacked-out word!",
     mathQ:"614 × 32 = ?\n\nUse long multiplication and show your working.",
     mathA:19648,
     mathHint:"Split it: 614 × 30 = 18,420 and 614 × 2 = 1,228. Then add them.",
@@ -2009,7 +2049,7 @@ const PAGES = [
   {
     id:13, bookPage:211, imageFile:'page_13.jpg',
     word:'SPANISH', wordHint:'_ _ _ _ _ _ _ (7 letters)',
-    clue:"The family's car broke down and some helpers arrived. Mum and Dad couldn't talk to them at all! Then little Manny completely shocked everyone. Read the bottom of the page to find the language he spoke!",
+    clue:"The family's car broke down and some helpers arrived. Mum and Dad couldn't talk to them at all! Then little Manny saved the day! Find the blacked-out word!",
     mathQ:"Emily needs 60g of fruit and 100ml of juice to make a small smoothie.\nShe uses the same recipe for a large smoothie.\nThe large smoothie uses 350ml of juice.\n\nHow much fruit does she need for the large smoothie? (in grams)",
     mathA:210,
     mathHint:"100ml uses 60g. So 1ml uses 60÷100 = 0.6g. Then 350 × 0.6 = ? Or: the juice tripled from 100 to 350 (ratio 3.5), so fruit = 60 × 3.5.",
@@ -2018,7 +2058,7 @@ const PAGES = [
   {
     id:14, bookPage:127, imageFile:'page_14.jpg',
     word:'SWEETIE', wordHint:'_ _ _ _ _ _ _ (7 letters)',
-    clue:"Greg is in the vet waiting room behind a gerbil and a cat with its face stuck in a yogurt container! The bottom paragraph mentions the Heffley family used to have a dog. What was the dog called?",
+    clue:"Greg is in the vet waiting room behind a gerbil and a cat with its face stuck in a yogurt container! What an experience! Find the blacked-out word!",
     mathQ:"¹⁄₃ − ¹⁄₉ = ?⁄₉\n\nEnter just the numerator (the top number when the denominator is 9).",
     mathA:2,
     mathHint:"Convert ¹⁄₃ into ninths first: ¹⁄₃ = ³⁄₉. Then ³⁄₉ − ¹⁄₉ = ?",
@@ -2027,7 +2067,7 @@ const PAGES = [
   {
     id:15, bookPage:184, imageFile:'page_15.jpg',
     word:'SOUVENIR', wordHint:'_ _ _ _ _ _ _ _ (8 letters)',
-    clue:"After the Cranium Shaker ride, Rowley's dad bought him a boppy balloon and a shirt. Greg was still feeling sick! Read the very first sentence to find the type of shop where the shirt came from.",
+    clue:"After the Cranium Shaker ride, Rowley's dad bought him a boppy balloon and a shirt. Greg was still feeling sick! Find the blacked-out word!",
     mathQ:"The souvenir shop sold 147 Cranium Shaker t-shirts in one week.\nEach t-shirt cost £12.\n\nHow much money did the shop take in total?",
     mathA:1764,
     mathHint:"147 × 12. Try 100 × 12 = 1200, then 47 × 12 = 564. Add together.",
@@ -2036,7 +2076,7 @@ const PAGES = [
   {
     id:16, bookPage:89, imageFile:'page_16.jpg',
     word:'KEYPAD', wordHint:'_ _ _ _ _ _ (6 letters)',
-    clue:"Greg opened a birthday present from Mum and Dad — a Ladybug Cellular Telephone! It had only two buttons. Read the second paragraph to find the word for the thing it was missing!",
+    clue:"Greg opened a birthday present from Mum and Dad — a Ladybug Cellular Telephone! It had only two buttons. Find the blacked-out word!",
     mathQ:"(5 + 3)² − 12 ÷ 4 = ?\n\nRemember: Brackets first, then powers, then ÷, then −",
     mathA:61,
     mathHint:"Step 1: (5+3) = 8. Step 2: 8² = 64. Step 3: 12÷4 = 3. Step 4: 64 − 3 = ?",
@@ -2045,7 +2085,7 @@ const PAGES = [
   {
     id:17, bookPage:71, imageFile:'page_17.jpg',
     word:'TAIL', wordHint:'_ _ _ _ (4 letters)',
-    clue:"Greg read a Spineticklers book called 'Tails, You Lose' by I.M. Spooky — and it gave him the strangest dream! Read the paragraph below the book cover to find the body part Greg dreamed he had!",
+    clue:"Greg loves a Spineticklers book series by I.M. Spooky — he gets wild dreams! Find the blacked-out word!",
     mathQ:"4 × 5 − 27 ÷ 3 = ?\n\nRemember: multiplication and division before subtraction!",
     mathA:11,
     mathHint:"Step 1: 4 × 5 = 20. Step 2: 27 ÷ 3 = 9. Step 3: 20 − 9 = ?",
@@ -2054,7 +2094,7 @@ const PAGES = [
   {
     id:18, bookPage:191, imageFile:'page_18.jpg',
     word:'STASH', wordHint:'_ _ _ _ _ (5 letters)',
-    clue:"Greg went to the laundry room to get paper towels and made an incredible discovery! Read the second paragraph — it describes exactly what he found hidden behind the paper towels. Find the word for the hidden collection!",
+    clue:"Greg went to the laundry room to get paper towels and made an incredible discovery! Find the blacked-out word!",
     mathQ:"3245 × 23 = ?",
     mathA:74635,
     mathHint:"Use long multiplication. Try 3245 × 20 = 64,900 then add 3245 × 3 = 9,735.",
@@ -2063,7 +2103,7 @@ const PAGES = [
   {
     id:19, bookPage:91, imageFile:'page_19.jpg',
     word:'BROWNIE', wordHint:'_ _ _ _ _ _ _ (7 letters)',
-    clue:"Greg's team was responsible for raking leaves in the playground area. A girl was put in charge of Greg's group — she was a junior Girl Scout. Read the last line of the opening paragraph to find her Scout rank!",
+    clue:"Greg's team was responsible for raking leaves in the playground area. A girl was put in charge of Greg's group — she was a junior Girl Scout. Find the blacked-out word!",
     mathQ:"³⁄₈ × 240 = ?",
     mathA:90,
     mathHint:"Find ¹⁄₈ of 240 first (240 ÷ 8 = 30), then multiply by 3.",
@@ -2072,7 +2112,7 @@ const PAGES = [
   {
     id:20, bookPage:134, imageFile:'page_20.jpg',
     word:'SCRATCH', wordHint:'_ _ _ _ _ _ _ (7 letters)',
-    clue:"A kid in the back of a vehicle is holding a handwritten sign with a spooky warning on it! Look at what the sign says — and the name that appears again in the two text paragraphs below. Find the surname!",
+    clue:"A kid in the back of a vehicle is holding a handwritten sign with a spooky warning on it! Find the blacked-out word!",
     mathQ:"Hardscrabble Farms has a rectangular field.\nThe perimeter is 96 metres and the length is 30 metres.\n\nWhat is the width of the field in metres?",
     mathA:18,
     mathHint:"Perimeter = 2 × (length + width). So length + width = 96 ÷ 2 = 48. Width = 48 − 30.",
@@ -2176,10 +2216,10 @@ const DOWN_CLUES = [
 ];
 
 const BONUS_CLUES = [
-  { unlockAfter:0,  emoji:'🥚', text:'The very first one is free! Look inside the book "Guinness World Records 2025" — there\'s a special envelope waiting for you inside!' },
-  { unlockAfter:4,  emoji:'🥚', text:'Clue 2 of 5: Find somewhere Dad loves to rest his sleepy head... check UNDER his pillow!' },
-  { unlockAfter:8,  emoji:'🥚', text:'Clue 3 of 5: You\'re doing brilliantly! Now check your school bag — there\'s something hiding in there with your pens and books!' },
-  { unlockAfter:12, emoji:'🥚', text:'Clue 4 of 5: Nearly there! One is taped underneath a chair in the house. Check every chair carefully... look UNDER them!' },
+  { unlockAfter:2,  emoji:'🥚', text:'Clue 1 of 5: Look inside the book "Guinness World Records 2025" — there\'s a special envelope waiting for you inside!' },
+  { unlockAfter:6,  emoji:'🥚', text:'Clue 2 of 5: Find somewhere Dad loves to rest his sleepy head... check UNDER his pillow!' },
+  { unlockAfter:11, emoji:'🥚', text:'Clue 3 of 5: You\'re doing brilliantly! Now check your school bag — there\'s something hiding in there with your pens and books!' },
+  { unlockAfter:15, emoji:'🥚', text:'Clue 4 of 5: Nearly there! One is taped underneath a chair in the house. Check every chair carefully... look UNDER them!' },
   { unlockAfter:20, emoji:'🥚', text:'Clue 5 of 5: ALL 20 PAGES SOLVED — amazing work! Last one is where dirty clothes go to get clean... check inside the washing machine!' },
 ];
 
