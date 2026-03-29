@@ -1242,11 +1242,11 @@
     right: 72px;
     display: flex;
     align-items: center;
-    gap: 14px;
+    justify-content: center;
     background: #1a0e2e;
     border: 3px solid #C084FC;
     border-radius: 16px;
-    padding: 40px 70px 40px 46px;
+    padding: 20px 35px 20px 35px;
     cursor: pointer;
     animation: beginPulse 2s ease-in-out infinite;
     z-index: 10;
@@ -1254,12 +1254,11 @@
     -webkit-tap-highlight-color: transparent;
   }
   .begin-btn:active { transform: scale(0.96); }
-  .begin-btn-icon { font-size: 2.4rem; line-height:1; }
   .begin-btn-text {
     font-family: 'Comic Neue', cursive;
     font-weight: 700;
-    font-size: 1.875rem;
-    letter-spacing: 1px;
+    font-size: 2.8rem;
+    letter-spacing: 2px;
     color: #C084FC;
     white-space: nowrap;
     animation: beginTextFlash 1.4s ease-in-out infinite;
@@ -1295,7 +1294,6 @@
            style="max-width:100%; max-height:100%; object-fit:contain; display:block;">
       <!-- BEGIN HERE button — navigates to HELP/instructions screen -->
       <button class="begin-btn" onclick="showScreen('instructions')">
-        <span class="begin-btn-icon">🎯</span>
         <span class="begin-btn-text">BEGIN HERE! →</span>
       </button>
     </div>
