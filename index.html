@@ -1232,17 +1232,21 @@
     0%,100% { box-shadow: 0 0 10px #C084FC88, 0 0 24px #C084FC44, 3px 3px 0 #7c3aed; }
     50%      { box-shadow: 0 0 22px #C084FCcc, 0 0 48px #C084FC99, 3px 3px 0 #7c3aed; }
   }
+  @keyframes beginTextFlash {
+    0%,100% { text-shadow: 0 0 12px #C084FCcc, 0 0 28px #C084FC88; opacity: 1; }
+    50%      { text-shadow: 0 0 24px #fff, 0 0 48px #C084FC, 0 0 80px #C084FCcc; opacity: 0.82; }
+  }
   .begin-btn {
     position: absolute;
     top: 18px;
-    right: 22px;
+    right: 72px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
     background: #1a0e2e;
-    border: 2px solid #C084FC;
-    border-radius: 12px;
-    padding: 10px 20px 10px 16px;
+    border: 3px solid #C084FC;
+    border-radius: 16px;
+    padding: 40px 70px 40px 46px;
     cursor: pointer;
     animation: beginPulse 2s ease-in-out infinite;
     z-index: 10;
@@ -1250,15 +1254,15 @@
     -webkit-tap-highlight-color: transparent;
   }
   .begin-btn:active { transform: scale(0.96); }
-  .begin-btn-icon { font-size: 1.6rem; line-height:1; }
+  .begin-btn-icon { font-size: 2.4rem; line-height:1; }
   .begin-btn-text {
     font-family: 'Comic Neue', cursive;
     font-weight: 700;
-    font-size: 1.25rem;
+    font-size: 1.875rem;
     letter-spacing: 1px;
     color: #C084FC;
-    text-shadow: 0 0 12px #C084FCcc, 0 0 28px #C084FC88;
     white-space: nowrap;
+    animation: beginTextFlash 1.4s ease-in-out infinite;
   }
   .neon-pin {
     font-family: 'Comic Neue', cursive;
