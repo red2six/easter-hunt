@@ -454,10 +454,11 @@
     margin-bottom: 6px;
   }
   .word-hint {
-    font-size: 1.05rem;
+    font-size: 1.21rem;
     color: #666;
     margin-bottom: 8px;
     font-style: italic;
+    text-align: center;
   }
   .word-input-row {
     display: flex;
@@ -1298,14 +1299,11 @@
         <svg width="40" height="40" viewBox="0 0 300 297" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;flex-shrink:0;color:#FFE135;filter:drop-shadow(0 0 6px #FFE135aa);">
           <g transform="matrix(1,0,0,1,-326.453,-1215.89)"><g transform="matrix(1,0,0,1,-343.849,168.845)"><g transform="matrix(1,0,0,1,80.8186,987.611)"><path d="M667.335,280.43C657.405,288.492 648.03,297.443 639.188,307.246" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1.17559,0,0,1.78827,-5.04815,790.549)"><path d="M667.335,280.43C656.726,288.178 647.407,297.154 639.188,307.246" style="fill:none;stroke:currentColor;stroke-width:4.13px;"/></g><g transform="matrix(1,0,0,1,80.8186,987.611)"><path d="M643.374,212.555C626.796,185.855 590.482,202.284 592.707,227.594C595.239,256.411 631.661,263.451 649.486,242.8" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1,0,0,1,80.8186,987.611)"><path d="M702.207,292.948C732.223,275.408 762.004,277.033 791.607,293.251" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1.00989,0,0,0.922452,74.6027,1003.58)"><ellipse cx="739.087" cy="179.769" rx="6.074" ry="9.637" style="fill:none;stroke:currentColor;stroke-width:6.46px;"/></g><g transform="matrix(0.92562,-0.111728,0.0885854,0.733891,218.968,1117.97)"><ellipse cx="739.087" cy="179.769" rx="6.074" ry="9.637" style="fill:none;stroke:currentColor;stroke-width:7.43px;"/></g><g transform="matrix(1,0,0,1,84.7161,989.896)"><path d="M629.924,114.996C650.279,107.662 670.471,102.407 689.255,115.037" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1,0,0,1,80.8186,989.896)"><path d="M640.017,74.149C658.944,84.529 681.318,95.825 693.153,115.037" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1,0,0,1,80.8186,987.611)"><path d="M716.536,62.559C704.609,77.22 698.31,87.331 693.153,115.037" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1,0,0,1,80.8186,987.611)"><path d="M824.353,207.253C858.413,205.454 882.674,205.27 886.047,232.258C877.375,260.79 851.641,258.835 824.687,254.699" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g><g transform="matrix(1,0,0,1,80.8186,987.611)"><path d="M821.576,130.219C785.385,97.978 726.78,99.641 693.153,120.479C659.526,141.317 643.139,180.703 645.715,223.744C656.591,328.025 794.325,352.387 853.936,259.455" style="fill:none;stroke:currentColor;stroke-width:6.25px;"/></g></g></g>
         </svg>
-        <span class="begin-btn-text">START HERE! →</span>
+        <span class="begin-btn-text">START HERE!</span>
       </button>
     </div>
 
-    <!-- Start CTA hint -->
-    <div style="text-align:center; padding:4px 0 0; flex-shrink:0;">
-      <span style="color:#94a3b8; font-family:'Comic Neue',cursive; font-weight:700; font-size:0.85rem; letter-spacing:1px;">▲ TAP  <span style="color:#FF7F00">HUNT</span>  IN THE MENU ABOVE TO START ▲</span>
-    </div>
+    
 
     <!-- Progress bar — sits just below the top nav -->
     <div style="width:100%; padding:8px 20px 6px; background:linear-gradient(180deg,#181825 0%,#1e1e2e 100%); display:flex; align-items:center; gap:12px; flex-shrink:0;">
@@ -2177,9 +2175,9 @@ const CIPHER_CELL_SET = new Set(CIPHER_CELLS.map(([r,c]) => `${r},${c}`));
 
 const CIPHER_GROUPS = [
   { encoded:'URL',  triggerWords:['SOUVENIR','RESELLING','CELEBRITY'],       digit:'1' },
-  { encoded:'RARL', triggerWords:['RENEGADES','STASH','SPRINKLER','URINAL'], digit:'9' },
   { encoded:'SCU',  triggerWords:['LEISURE','COPYING','REPUTATION'],          digit:'2' },
   { encoded:'TAIL', triggerWords:['TAIL','FESTIVAL','BROWNIE','SPRINKLER'],   digit:'5' },
+  { encoded:'RARL', triggerWords:['RENEGADES','STASH','SPRINKLER','URINAL'], digit:'9' },
 ];
 // Cipher cells are embedded in hunt words — they reveal naturally when hunt words are solved
 // Cipher word → hunt words whose letters form it (ALL must be solved to show in decoder)
