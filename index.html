@@ -926,7 +926,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 12px;
+    padding-top: 65px;
   }
   #comic-overlay.show { display: flex; }
   #comic-overlay img {
@@ -938,16 +938,24 @@
     box-shadow: 0 0 40px #38BDF844;
   }
   #comic-overlay-close {
+    position: fixed;
+    top: 68px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: 'Comic Neue', cursive;
     font-weight: 700;
     font-size: 1.1rem;
     color: #38BDF8;
-    background: #1a1a2e;
+    background: #0e1a2e;
     border: 2px solid #38BDF8;
-    border-radius: 10px;
-    padding: 8px 28px;
+    border-radius: 50%;
     cursor: pointer;
-    letter-spacing: 1px;
+    z-index: 9001;
+    line-height: 1;
   }
   #screen-celebration {
     flex-direction: column;
@@ -1684,8 +1692,8 @@
 
   <!-- ===== COMIC OVERLAY ===== -->
   <div id="comic-overlay" onclick="closeComic()">
+    <button id="comic-overlay-close" onclick="closeComic()">✕</button>
     <img id="comic-overlay-img" src="" alt="Comic Strip">
-    <button id="comic-overlay-close" onclick="closeComic()">✕ CLOSE</button>
   </div>
 
   <!-- ===== CELEBRATION SCREEN ===== -->
