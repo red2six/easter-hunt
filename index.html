@@ -892,7 +892,63 @@
     margin-top: 2px;
   }
 
-  /* ===== CELEBRATION SCREEN ===== */
+  /* ===== COMIC BUBBLES ===== */
+  .comic-bubbles-row {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .comic-bubble-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s;
+  }
+  .comic-bubble-btn:active { transform: scale(0.92); }
+  .comic-bubble-btn.locked { opacity: 0.32; cursor: not-allowed; filter: grayscale(0.6); }
+  .comic-bubble-btn svg { width: 100%; height: auto; max-height: 80px; }
+
+  /* ===== COMIC OVERLAY ===== */
+  #comic-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0,0,0,0.92);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+  }
+  #comic-overlay.show { display: flex; }
+  #comic-overlay img {
+    max-width: 92vw;
+    max-height: 82vh;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 3px solid #38BDF8;
+    box-shadow: 0 0 40px #38BDF844;
+  }
+  #comic-overlay-close {
+    font-family: 'Comic Neue', cursive;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #38BDF8;
+    background: #1a1a2e;
+    border: 2px solid #38BDF8;
+    border-radius: 10px;
+    padding: 8px 28px;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
   #screen-celebration {
     flex-direction: column;
     align-items: center;
@@ -1525,7 +1581,8 @@
 
     <!-- Left: title + clue cards -->
     <div style="flex:1.1; min-width:0; padding:16px 16px 16px 24px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
-      <h2 class="bonus-title" style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+      <div style="display:flex; align-items:center; gap:14px; flex-shrink:0; flex-wrap:wrap;">
+        <h2 class="bonus-title" style="display:flex;align-items:center;gap:10px;margin-bottom:0;flex-shrink:0;">
         <span style="color:#38BDF8;display:flex;"><svg width="36" height="36"  viewBox="0 0 174 233" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
     <g transform="matrix(1,0,0,1,-1392.03,-1264.02)">
         <g>
@@ -1606,10 +1663,14 @@
 </svg></span>
         BONUS EGG HUNT!
       </h2>
-      <p style="margin:0 0 8px; font-size:0.95rem; color:var(--text-secondary); line-height:1.5; flex-shrink:0;">
-        Hidden around the house are <strong>5 special surprises</strong>!<br>
-        Clues unlock as you solve more pages. Find all 5!
-      </p>
+        <p style="margin:0; font-size:0.88rem; color:var(--text-secondary); line-height:1.4;">
+          Hidden around the house are <strong>5 special surprises</strong>!<br>
+          Clues unlock as you solve more pages. Find all 5!
+        </p>
+      </div>
+
+      <!-- Comic bubble buttons row -->
+      <div class="comic-bubbles-row" id="comic-bubbles-row"></div>
       <div class="egg-clues-grid" id="egg-clues-grid"></div>
     </div>
 
@@ -1619,6 +1680,12 @@
            style="max-width:100%; max-height:100%; object-fit:contain; display:block;">
     </div>
 
+  </div>
+
+  <!-- ===== COMIC OVERLAY ===== -->
+  <div id="comic-overlay" onclick="closeComic()">
+    <img id="comic-overlay-img" src="" alt="Comic Strip">
+    <button id="comic-overlay-close" onclick="closeComic()">✕ CLOSE</button>
   </div>
 
   <!-- ===== CELEBRATION SCREEN ===== -->
@@ -2225,15 +2292,22 @@ const BONUS_CLUES = [
   { unlockAfter:20, emoji:'🥚', text:'Clue 5 of 5: ALL 20 PAGES SOLVED — amazing work! Last one is where dirty clothes go to get clean... check inside the washing machine!' },
 ];
 
-// ============================================================
-// STATE
-// ============================================================
+// Comics: unlock after solving word on these page IDs (pages 3,7,10,13,16,19)
+const COMIC_UNLOCKS = [
+  { comicNum:1, unlocksOnPageId:3,  file:'Comic1.jpg' },
+  { comicNum:2, unlocksOnPageId:7,  file:'Comic2.jpg' },
+  { comicNum:3, unlocksOnPageId:10, file:'Comic3.jpg' },
+  { comicNum:4, unlocksOnPageId:13, file:'Comic4.jpg' },
+  { comicNum:5, unlocksOnPageId:16, file:'Comic5.jpg' },
+  { comicNum:6, unlocksOnPageId:19, file:'Comic6.jpg' },
+];
 let state = {
   currentPage: 0,        // 0-based index into PAGES
   solvedPages: {},       // pageId -> word
   mathSolved: {},        // pageId -> true
   crosswordSolved: {},   // word -> true
   currentXwWord: null,
+  unlockedComics: {},    // comicIndex (1-6) -> true
 };
 
 function loadState() {
@@ -2453,6 +2527,7 @@ function checkWord() {
     renderPageDots();
     updateHomeProgress();
     checkBonusUnlock();
+    checkComicUnlock(page.id);
 
     // Check for completion
     if (Object.keys(state.solvedPages).length === 20) {
@@ -2707,7 +2782,62 @@ function checkBonusUnlock() {
   }
 }
 
+// ============================================================
+// COMIC STRIP FUNCTIONS
+// ============================================================
+function checkComicUnlock(pageId) {
+  const comic = COMIC_UNLOCKS.find(c => c.unlocksOnPageId === pageId);
+  if (!comic) return;
+  if (state.unlockedComics[comic.comicNum]) return; // already unlocked
+  state.unlockedComics[comic.comicNum] = true;
+  saveState();
+  // Show comic immediately as reward
+  setTimeout(() => openComic(comic.comicNum), 800);
+}
+
+function openComic(comicNum) {
+  const comic = COMIC_UNLOCKS.find(c => c.comicNum === comicNum);
+  if (!comic) return;
+  if (!state.unlockedComics[comicNum]) return; // locked, can't open
+  document.getElementById('comic-overlay-img').src = comic.file;
+  document.getElementById('comic-overlay').classList.add('show');
+}
+
+function closeComic() {
+  document.getElementById('comic-overlay').classList.remove('show');
+  document.getElementById('comic-overlay-img').src = '';
+  // Re-render bubbles in case we just unlocked one
+  renderComicBubbles();
+}
+
+function renderComicBubbles() {
+  const row = document.getElementById('comic-bubbles-row');
+  if (!row) return;
+  row.innerHTML = '';
+  COMIC_UNLOCKS.forEach(comic => {
+    const unlocked = !!state.unlockedComics[comic.comicNum];
+    const btn = document.createElement('button');
+    btn.className = 'comic-bubble-btn' + (unlocked ? '' : ' locked');
+    btn.title = unlocked ? `Comic ${comic.comicNum} — tap to read!` : `Solve more pages to unlock`;
+    btn.disabled = !unlocked;
+    // POW star SVG — blue accent #38BDF8 when unlocked, muted when locked
+    const fill   = unlocked ? '#38BDF8' : '#2d2d44';
+    const stroke = unlocked ? '#0e1a2e' : '#1a1a2e';
+    const textCol= unlocked ? '#0e1a2e' : '#64748b';
+    btn.innerHTML = `
+      <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" style="filter:${unlocked ? 'drop-shadow(0 2px 6px #38BDF866)' : 'none'}">
+        <polygon points="70,2 80,32 110,12 98,40 132,36 112,58 138,66 110,74 126,100 96,90 98,124 74,104 70,136 66,104 42,124 44,90 14,100 30,74 2,66 28,58 8,36 42,40 30,12 60,32"
+          fill="${fill}" stroke="${stroke}" stroke-width="3.5" stroke-linejoin="round"/>
+        <text x="70" y="80" text-anchor="middle" fill="${textCol}"
+          font-family="Bangers,cursive" font-size="40" font-weight="700">${comic.comicNum}</text>
+      </svg>`;
+    if (unlocked) btn.onclick = () => openComic(comic.comicNum);
+    row.appendChild(btn);
+  });
+}
+
 function renderBonus() {
+  renderComicBubbles();
   const solvedCount = Object.keys(state.solvedPages).length;
   const grid = document.getElementById('egg-clues-grid');
   grid.innerHTML = '';
@@ -2901,6 +3031,7 @@ loadState();
 buildCrosswordData();
 updateHomeProgress();
 checkBonusUnlock();
+renderComicBubbles();
 showScreen('home');
 </script>
 

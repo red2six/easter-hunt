@@ -1,7 +1,7 @@
 // Greg's Easter Hunt — Service Worker
 // Caches all assets for full offline use
 
-const CACHE_NAME = 'easter-hunt-v1';
+const CACHE_NAME = 'easter-hunt-v2';
 
 const ASSETS = [
   './index.html',
@@ -21,6 +21,8 @@ const ASSETS = [
   './page_9.jpg',  './page_10.jpg', './page_11.jpg', './page_12.jpg',
   './page_13.jpg', './page_14.jpg', './page_15.jpg', './page_16.jpg',
   './page_17.jpg', './page_18.jpg', './page_19.jpg', './page_20.jpg',
+  './Comic1.jpg',  './Comic2.jpg',  './Comic3.jpg',
+  './Comic4.jpg',  './Comic5.jpg',  './Comic6.jpg',
 ];
 
 // Install: cache everything
