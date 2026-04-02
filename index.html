@@ -1001,6 +1001,124 @@
     100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
   }
 
+
+  /* ===== GREG'S CATCH GAME ===== */
+  #screen-game {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    background: #87CEEB;
+    overflow: hidden;
+    position: relative;
+  }
+  #game-canvas-wrap {
+    flex: 1; min-height: 0; width: 100%;
+    position: relative; overflow: hidden;
+  }
+  #game-canvas { display: block; position: absolute; top: 0; left: 0; background: transparent; }
+  #game-stats-panel {
+    position: absolute; top: 10px; left: 10px; width: 130px;
+    background: rgba(0,0,0,0.55); border: 2px solid rgba(255,255,255,0.22);
+    border-radius: 12px; padding: 10px 12px; z-index: 15;
+    pointer-events: none; backdrop-filter: blur(4px);
+  }
+  #game-stats-panel .gsp-title {
+    font-family: "Comic Neue", cursive; font-size: 0.7rem; font-weight: 700;
+    color: #FFE135; letter-spacing: 1px; text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 5px; margin-bottom: 8px; text-align: center;
+  }
+  #game-stats-panel .gsp-row {
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 7px;
+  }
+  #game-stats-panel .gsp-label {
+    font-family: "Comic Neue", cursive; font-size: 0.7rem;
+    color: #ffffffcc; font-weight: 700;
+  }
+  #game-stats-panel .gsp-val {
+    font-family: "Comic Neue", cursive; font-size: 1rem;
+    font-weight: 700; color: #FFE135; text-shadow: 0 0 6px #FFE13566;
+  }
+  #game-legend-panel {
+    position: absolute; top: 10px; right: 10px; width: 150px;
+    background: rgba(0,0,0,0.55); border: 2px solid rgba(255,255,255,0.22);
+    border-radius: 12px; padding: 10px 12px; z-index: 15;
+    pointer-events: none; backdrop-filter: blur(4px);
+  }
+  #game-legend-panel .glp-title {
+    font-family: "Comic Neue", cursive; font-size: 0.82rem; font-weight: 700;
+    color: #FFE135; border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 5px; margin-bottom: 8px; text-align: center;
+  }
+  .glp-row {
+    display: flex; align-items: center; gap: 7px; margin-bottom: 6px;
+  }
+  .glp-row img { width: 26px; height: 34px; object-fit: contain; }
+  .glp-row .glp-himg { width: 20px; height: 34px; object-fit: contain; }
+  .glp-row-text {
+    font-family: "Comic Neue", cursive; font-size: 0.7rem;
+    font-weight: 700; line-height: 1.25;
+  }
+  .glp-good { color: #4ADE80; } .glp-great { color: #FFE135; } .glp-bad { color: #F87171; }
+  .glp-sep { border: none; border-top: 1px solid rgba(255,255,255,0.15); margin: 5px 0; }
+  #game-overlay {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.68); z-index: 25;
+  }
+  #game-overlay.egg-hidden { display: none !important; }
+  #game-overlay-title {
+    font-family: "Comic Neue", cursive; font-size: clamp(1.8rem,4vw,2.8rem);
+    font-weight: 700; color: #FFE135; text-shadow: 0 0 20px #FFE135;
+    margin-bottom: 8px; text-align: center;
+  }
+  #game-overlay-sub {
+    font-family: "Comic Neue", cursive; font-size: clamp(0.88rem,1.8vw,1.15rem);
+    color: #e2e8f0; margin-bottom: 20px; text-align: center;
+    line-height: 1.65; max-width: 520px; padding: 0 20px;
+  }
+  #game-overlay-score {
+    font-family: "Comic Neue", cursive; font-size: clamp(1.1rem,2.5vw,1.5rem);
+    font-weight: 700; color: #4ADE80; margin-bottom: 18px; text-align: center;
+  }
+  #game-loading {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.75); z-index: 30;
+  }
+  #game-loading.egg-hidden { display: none !important; }
+  #game-loading p {
+    font-family: "Comic Neue", cursive; font-size: 1.3rem;
+    font-weight: 700; color: #FFE135; margin-top: 14px; letter-spacing: 2px;
+  }
+  .game-spinner {
+    width: 48px; height: 48px; border: 5px solid rgba(255,255,255,0.2);
+    border-top-color: #FFE135; border-radius: 50%;
+    animation: gameSpin 0.8s linear infinite;
+  }
+  @keyframes gameSpin { to { transform: rotate(360deg); } }
+  .game-btn {
+    background: #FF8C00; color: #0d0d1a; border: none; border-radius: 10px;
+    font-family: "Comic Neue", cursive; font-size: 1.2rem; font-weight: 700;
+    padding: 14px 36px; cursor: pointer; letter-spacing: 1px;
+    box-shadow: 0 4px 16px #FF8C0066;
+    transition: transform 0.1s; -webkit-tap-highlight-color: transparent; margin: 6px;
+  }
+  .game-btn:active { transform: scale(0.94); }
+  .game-btn.secondary {
+    background: transparent; color: #60A5FA; border: 2px solid #60A5FA;
+    box-shadow: none; font-size: 1rem; padding: 10px 24px;
+  }
+  @keyframes gameScorePop {
+    0%{transform:scale(1)} 50%{transform:scale(1.4)} 100%{transform:scale(1)}
+  }
+  .score-pop { animation: gameScorePop 0.25s ease-out; }
+  #nav-game.active { color: #FF6B9D; background: rgba(255,107,157,0.1); }
+  #nav-game.active svg { color: #FF6B9D; filter: drop-shadow(0 0 4px #FF6B9Daa); }
+  #nav-game:hover:not(.active) { color: #FF6B9D88; }
+  #nav-game:hover:not(.active) svg { color: #FF6B9D88; }
+
   /* ===== NAV BAR ===== */
   .nav-bar {
     position: fixed;
@@ -1716,6 +1834,84 @@
     </div>
   </div>
 
+  <!-- ===== GREG'S CATCH GAME ===== -->
+  <div id="screen-game" class="screen">
+    <div id="game-canvas-wrap">
+      <canvas id="game-canvas"></canvas>
+
+      <!-- Loading spinner shown while images load -->
+      <div id="game-loading">
+        <div class="game-spinner"></div>
+        <p>LOADING...</p>
+      </div>
+
+      <!-- Left: Game Stats -->
+      <div id="game-stats-panel">
+        <div class="gsp-title">GAME STATS</div>
+        <div class="gsp-row">
+          <span class="gsp-label">Lives</span>
+          <span class="gsp-val" id="game-lives-display">❤️❤️❤️</span>
+        </div>
+        <div class="gsp-row">
+          <span class="gsp-label">Score</span>
+          <span class="gsp-val" id="game-score-display">0</span>
+        </div>
+        <div class="gsp-row">
+          <span class="gsp-label">Best</span>
+          <span class="gsp-val" id="game-best-display" style="color:#4ADE80;">0</span>
+        </div>
+        <div class="gsp-row">
+          <span class="gsp-label">Level</span>
+          <span class="gsp-val" id="game-level-display" style="color:#60A5FA;">1</span>
+        </div>
+      </div>
+
+      <!-- Right: Legend -->
+      <div id="game-legend-panel">
+        <div class="glp-title">Greg's Catch</div>
+        <div class="glp-row">
+          <img src="egg_orange.png" alt="">
+          <span class="glp-row-text glp-good">Orange<br>+10 pts</span>
+        </div>
+        <div class="glp-row">
+          <img src="egg_purple.png" alt="">
+          <span class="glp-row-text glp-good">Purple<br>+10 pts</span>
+        </div>
+        <div class="glp-row">
+          <img src="egg_blue.png" alt="">
+          <span class="glp-row-text glp-good">Blue<br>+10 pts</span>
+        </div>
+        <div class="glp-row">
+          <img src="egg_rainbow.png" alt="">
+          <span class="glp-row-text glp-great">Rainbow<br>+25 pts ⭐</span>
+        </div>
+        <hr class="glp-sep">
+        <div class="glp-row">
+          <img src="egg_cracked.png" alt="">
+          <span class="glp-row-text glp-bad">Cracked<br>−1 life 💀</span>
+        </div>
+        <div class="glp-row">
+          <img src="hammer.png" alt="" class="glp-himg">
+          <span class="glp-row-text glp-bad">Hammer<br>−1 life 🔨</span>
+        </div>
+      </div>
+
+      <!-- Start / Game Over overlay -->
+      <div id="game-overlay" class="egg-hidden">
+        <div id="game-overlay-title">🥚 GREG'S CATCH 🥚</div>
+        <div id="game-overlay-sub">
+          Catch Easter eggs in Greg's basket!<br>
+          <span style="color:#4ADE80;">Coloured eggs = +10 pts &nbsp;|&nbsp; 🌈 Rainbow = +25 pts</span><br>
+          <span style="color:#F87171;">🥚 Cracked egg = −1 life &nbsp;|&nbsp; 🔨 Hammer = −1 life</span><br><br>
+          <span style="color:#ffffffaa;font-size:0.9rem;">Drag Greg left and right to move</span>
+        </div>
+        <div id="game-overlay-score" style="display:none;"></div>
+        <button class="game-btn" onclick="startEggGame()">▶ PLAY!</button>
+        <button class="game-btn secondary" onclick="showScreen('home')">← BACK TO HUNT</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast notification -->
   <div class="toast" id="toast"></div>
 
@@ -2004,6 +2200,7 @@
     </g>
 </svg><span class="nav-label">EGGS</span><span id="egg-counter-badge" style="display:none; background:#38BDF8; color:#0d0d1a; font-family:'Comic Neue',cursive; font-weight:900; font-size:0.75rem; border-radius:50%; width:18px; height:18px; align-items:center; justify-content:center; margin-left:2px; box-shadow:0 0 6px #38BDF8aa; flex-shrink:0;"></span></button>
     <button class="nav-item" id="nav-instructions" onclick="showScreen('instructions')"><svg width="50" height="50" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="13" r="10"/><path d="M10 10C10 8.3 11.3 7 13 7C14.7 7 16 8.3 16 10C16 11.5 15 12.5 13.5 13.2C13.2 13.4 13 13.7 13 14V15"/><circle cx="13" cy="18" r="0.8" fill="currentColor" stroke="none"/></svg><span class="nav-label">HELP</span></button>
+    <button class="nav-item" id="nav-game" onclick="showScreen('game')"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="22" height="14" rx="4"/><line x1="9" y1="11.5" x2="9" y2="11.5"/><line x1="9" y1="14" x2="9" y2="14"/><line x1="9" y1="16.5" x2="9" y2="16.5"/><line x1="7.5" y1="14" x2="10.5" y2="14"/><circle cx="17" cy="13" r="1" fill="currentColor" stroke="none"/><circle cx="19.5" cy="15.5" r="1" fill="currentColor" stroke="none"/></svg><span class="nav-label">GAME</span></button>
   </nav>
 
 <script>
@@ -2349,6 +2546,7 @@ function showScreen(name) {
   if (name === 'decoder') renderDecoder();
   if (name === 'bonus') renderBonus();
   if (name === 'home') updateHomeProgress();
+  if (name === 'game') initGameScreen();
 }
 
 function startHunt() {
@@ -3037,6 +3235,416 @@ function checkPin() {
     fb.style.color = 'var(--red)';
   }
 }
+
+// ============================================================
+// GREG'S CATCH — EGG CATCHER GAME
+// ============================================================
+
+var EGG_GAME = {
+  canvas: null, ctx: null, animId: null, running: false,
+  score: 0, lives: 3, best: 0, level: 1, frameCount: 0,
+  items: [], particles: [],
+  greg: { x: 0, y: 0, w: 102, h: 200 },
+  drag: { active: false, startX: 0, gregStartX: 0 },
+  spawnRate: 90,
+  imgs: {}, imgsLoaded: false,
+  _th: null, _tm: null, _te: null, _md: null, _mm: null, _mu: null,
+};
+
+var EGG_TYPES = [
+  { type:'orange',  file:'egg_orange.png',  pts:10, bad:false, weight:28, w:55, h:76 },
+  { type:'purple',  file:'egg_purple.png',  pts:10, bad:false, weight:25, w:55, h:76 },
+  { type:'blue',    file:'egg_blue.png',    pts:10, bad:false, weight:22, w:55, h:76 },
+  { type:'rainbow', file:'egg_rainbow.png', pts:25, bad:false, weight:8,  w:55, h:76 },
+  { type:'cracked', file:'egg_cracked.png', pts:0,  bad:true,  weight:10, w:55, h:76 },
+  { type:'hammer',  file:'hammer.png',      pts:0,  bad:true,  weight:7,  w:49, h:80 },
+];
+
+function eggShowLoading(show) {
+  var el = document.getElementById('game-loading');
+  if (el) el.classList.toggle('egg-hidden', !show);
+}
+
+function loadEggImages(callback) {
+  var G = EGG_GAME;
+  var files = ['greg_with_basket.png', 'game_bg.png'];
+  EGG_TYPES.forEach(function(t) { files.push(t.file); });
+  var total = files.length, loaded = 0;
+  function onDone() {
+    loaded++;
+    if (loaded === total) {
+      G.imgsLoaded = true;
+      eggShowLoading(false);
+      if (callback) callback();
+    }
+  }
+  files.forEach(function(file) {
+    var img = new Image();
+    // crossOrigin needed for GitHub Pages; skip for file:// (Safari blocks it)
+    if (window.location.protocol !== 'file:') {
+      img.crossOrigin = 'anonymous';
+    }
+    img.onload = onDone;
+    img.onerror = onDone;
+    img.src = file;
+    G.imgs[file] = img;
+  });
+}
+
+function initGameScreen() {
+  var G = EGG_GAME;
+  // Stop any previous game loop
+  if (G.animId) { cancelAnimationFrame(G.animId); G.animId = null; }
+  G.running = false;
+
+  G.canvas = document.getElementById('game-canvas');
+  G.ctx = G.canvas.getContext('2d');
+
+  // Load best score
+  try { G.best = parseInt(localStorage.getItem('eggCatcherBest') || '0'); } catch(e) { G.best = 0; }
+
+  // Always size canvas FIRST before anything else
+  // Use setTimeout(0) to let the flex layout paint before we measure offsetWidth
+  setTimeout(function() {
+    setGameBgCSS();
+    resizeEggCanvas();
+    updateGameHUD();
+
+    if (G.imgsLoaded) {
+      // Images already cached from a previous visit — draw immediately
+      eggShowLoading(false);
+      drawEggPreviewFrame();
+      showEggOverlay(true, false, 0);
+    } else {
+      // Show spinner and load images
+      eggShowLoading(true);
+      showEggOverlay(false, false, 0);
+      loadEggImages(function() {
+        drawEggPreviewFrame();
+        showEggOverlay(true, false, 0);
+      });
+    }
+  }, 0);
+}
+
+function resizeEggCanvas() {
+  var G = EGG_GAME;
+  var wrap = document.getElementById('game-canvas-wrap');
+  var W = wrap.offsetWidth  || window.innerWidth;
+  var H = wrap.offsetHeight || Math.max(300, window.innerHeight - 60);
+  G.canvas.width  = W;
+  G.canvas.height = H;
+  G.canvas.style.width  = W + 'px';
+  G.canvas.style.height = H + 'px';
+  G.greg.x = W / 2;
+  G.greg.y = H - 8;
+}
+
+function drawEggPreviewFrame() {
+  var G = EGG_GAME;
+  if (!G.canvas || !G.ctx || !G.canvas.width) return;
+  var ctx = G.ctx;
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.clearRect(0, 0, G.canvas.width, G.canvas.height);
+  drawEggBg(ctx, G.canvas.width, G.canvas.height);
+  drawGregSprite(ctx, G.greg.x, G.greg.y);
+}
+
+function updateGameHUD() {
+  var G = EGG_GAME;
+  var lives = document.getElementById('game-lives-display');
+  if (lives) {
+    var h = '';
+    for (var i = 0; i < 3; i++) h += i < G.lives ? '❤️' : '🖤';
+    lives.textContent = h;
+  }
+  var score = document.getElementById('game-score-display');
+  if (score) score.textContent = G.score;
+  var best = document.getElementById('game-best-display');
+  if (best) best.textContent = G.best;
+  var level = document.getElementById('game-level-display');
+  if (level) level.textContent = G.level;
+}
+
+function showEggOverlay(show, isGameOver, finalScore) {
+  var ov  = document.getElementById('game-overlay');
+  var ttl = document.getElementById('game-overlay-title');
+  var sub = document.getElementById('game-overlay-sub');
+  var sc  = document.getElementById('game-overlay-score');
+  if (!ov) return;
+  if (!show) { ov.classList.add('egg-hidden'); return; }
+  ov.classList.remove('egg-hidden');
+  if (isGameOver) {
+    ttl.textContent = '💀 GAME OVER! 💀';
+    sub.innerHTML = 'Better luck next time, Greg!<br><span style="color:#ffffffaa;font-size:0.85rem;">Drag left and right to move</span>';
+    sc.style.display = 'block';
+    var isNew = finalScore > EGG_GAME.best;
+    sc.innerHTML = 'Score: <span style="color:#FFE135;">' + finalScore + '</span>' +
+      (isNew ? '<br><span style="color:#4ADE80;font-size:1rem;">🏆 NEW BEST!</span>' : '');
+  } else {
+    ttl.innerHTML = '🥚 GREG\'S CATCH 🥚';
+    sub.innerHTML =
+      'Catch Easter eggs in Greg\'s basket!<br>' +
+      '<span style="color:#4ADE80;">Coloured eggs = +10 pts &nbsp;|&nbsp; 🌈 Rainbow = +25 pts</span><br>' +
+      '<span style="color:#F87171;">🥚 Cracked egg = −1 life &nbsp;|&nbsp; 🔨 Hammer = −1 life</span><br><br>' +
+      '<span style="color:#ffffffaa;font-size:0.9rem;">Drag Greg left and right to move</span>';
+    sc.style.display = 'none';
+  }
+}
+
+function drawEggBg(ctx, W, H) {
+  // Background is handled via CSS on the canvas-wrap — just clear to transparent
+  // This avoids Safari canvas taint issues with local file:// images
+  ctx.clearRect(0, 0, W, H);
+}
+
+function setGameBgCSS() {
+  var wrap = document.getElementById('game-canvas-wrap');
+  if (wrap) {
+    wrap.style.backgroundImage = "url('game_bg.png')";
+    wrap.style.backgroundSize = 'cover';
+    wrap.style.backgroundPosition = 'center bottom';
+    wrap.style.backgroundRepeat = 'no-repeat';
+  }
+}
+
+function drawGregSprite(ctx, cx, by) {
+  var G = EGG_GAME;
+  var img = G.imgs['greg_with_basket.png'];
+  var w = G.greg.w, h = G.greg.h;
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
+  if (img && img.complete && img.naturalWidth > 0) {
+    try {
+      ctx.drawImage(img, cx - w / 2, by - h, w, h);
+      G._gregDrawOk = true;
+    } catch(e) {
+      // Safari file:// taint — use CSS positioned element instead
+      G._gregDrawOk = false;
+      eggUpdateGregCSS(cx, by, w, h);
+    }
+  } else {
+    ctx.fillStyle = '#222';
+    ctx.fillRect(cx - 20, by - h, 40, h);
+  }
+}
+
+function eggUpdateGregCSS(cx, by, w, h) {
+  var el = document.getElementById('game-greg-css');
+  if (!el) {
+    el = document.createElement('img');
+    el.id = 'game-greg-css';
+    el.src = 'greg_with_basket.png';
+    el.style.cssText = 'position:absolute;bottom:8px;width:' + w + 'px;height:' + h + 'px;pointer-events:none;z-index:12;transform:translateX(-50%);';
+    var wrap = document.getElementById('game-canvas-wrap');
+    if (wrap) wrap.appendChild(el);
+  }
+  el.style.left = cx + 'px';
+}
+
+function drawItemSprite(ctx, it) {
+  var G = EGG_GAME;
+  var img = G.imgs[it.file];
+  ctx.save();
+  ctx.translate(it.x, it.y);
+  ctx.rotate(it.angle);
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
+  if (img && img.complete && img.naturalWidth > 0) {
+    try {
+      ctx.drawImage(img, -it.w / 2, -it.h / 2, it.w, it.h);
+    } catch(e) {
+      // Safari file:// fallback — draw coloured shape
+      ctx.fillStyle = it.bad ? '#F87171' : (it.type === 'rainbow' ? '#FFD700' : '#4ADE80');
+      ctx.beginPath();
+      ctx.ellipse(0, 0, it.w / 2, it.h / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  } else {
+    ctx.fillStyle = it.bad ? '#F87171' : '#4ADE80';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, it.w / 2, it.h / 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function startEggGame() {
+  var G = EGG_GAME;
+  if (G.animId) cancelAnimationFrame(G.animId);
+  resizeEggCanvas();
+  showEggOverlay(false, false, 0);
+  G.score = 0; G.lives = 3; G.level = 1;
+  G.frameCount = 0; G.spawnRate = 90;
+  G.items = []; G.particles = [];
+  G.running = true;
+  updateGameHUD();
+  setupEggInput();
+  G.animId = requestAnimationFrame(eggGameLoop);
+}
+
+function setupEggInput() {
+  var G = EGG_GAME;
+  if (G._th) {
+    G.canvas.removeEventListener('touchstart', G._th);
+    G.canvas.removeEventListener('touchmove',  G._tm);
+    G.canvas.removeEventListener('touchend',   G._te);
+    G.canvas.removeEventListener('mousedown',  G._md);
+    G.canvas.removeEventListener('mousemove',  G._mm);
+    G.canvas.removeEventListener('mouseup',    G._mu);
+  }
+  function getCanvasX(clientX) {
+    var r = G.canvas.getBoundingClientRect();
+    return (clientX - r.left) * (G.canvas.width / r.width);
+  }
+  function clampGreg(x) {
+    return Math.max(G.greg.w / 2, Math.min(G.canvas.width - G.greg.w / 2, x));
+  }
+  G._th = function(e) {
+    e.preventDefault();
+    G.drag.active = true;
+    G.drag.startX = getCanvasX(e.touches[0].clientX);
+    G.drag.gregStartX = G.greg.x;
+  };
+  G._tm = function(e) {
+    e.preventDefault();
+    if (!G.drag.active) return;
+    G.greg.x = clampGreg(G.drag.gregStartX + (getCanvasX(e.touches[0].clientX) - G.drag.startX));
+  };
+  G._te = function() { G.drag.active = false; };
+  G._md = function(e) {
+    G.drag.active = true;
+    G.drag.startX = getCanvasX(e.clientX);
+    G.drag.gregStartX = G.greg.x;
+  };
+  G._mm = function(e) {
+    if (!G.drag.active) return;
+    G.greg.x = clampGreg(G.drag.gregStartX + (getCanvasX(e.clientX) - G.drag.startX));
+  };
+  G._mu = function() { G.drag.active = false; };
+  G.canvas.addEventListener('touchstart', G._th, {passive:false});
+  G.canvas.addEventListener('touchmove',  G._tm, {passive:false});
+  G.canvas.addEventListener('touchend',   G._te);
+  G.canvas.addEventListener('mousedown',  G._md);
+  G.canvas.addEventListener('mousemove',  G._mm);
+  G.canvas.addEventListener('mouseup',    G._mu);
+}
+
+function eggPickType() {
+  var total = EGG_TYPES.reduce(function(s, t) { return s + t.weight; }, 0);
+  var r = Math.random() * total;
+  for (var i = 0; i < EGG_TYPES.length; i++) {
+    r -= EGG_TYPES[i].weight;
+    if (r <= 0) return EGG_TYPES[i];
+  }
+  return EGG_TYPES[0];
+}
+
+function eggSpawn() {
+  var G = EGG_GAME;
+  var t = eggPickType();
+  var speed = 2.5 + G.level * 0.45 + Math.random() * 1.5;
+  var rotSpeed = t.type === 'hammer'
+    ? (0.055 + Math.random() * 0.035) * (Math.random() > 0.5 ? 1 : -1)
+    : (Math.random() - 0.5) * 0.035;
+  G.items.push({
+    x: t.w / 2 + Math.random() * (G.canvas.width - t.w),
+    y: -t.h / 2, vy: speed, angle: 0, rotSpeed: rotSpeed,
+    type: t.type, file: t.file, pts: t.pts, bad: t.bad, w: t.w, h: t.h,
+  });
+}
+
+function eggParticles(x, y, color, count) {
+  var G = EGG_GAME;
+  for (var i = 0; i < count; i++) {
+    var a = (Math.PI * 2 * i / count) + Math.random() * 0.5;
+    var sp = 2 + Math.random() * 5;
+    G.particles.push({
+      x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 2,
+      life: 1, decay: 0.04 + Math.random() * 0.03,
+      r: 3 + Math.random() * 5, color: color,
+    });
+  }
+}
+
+function eggGameLoop() {
+  var G = EGG_GAME;
+  if (!G.running) return;
+  G.animId = requestAnimationFrame(eggGameLoop);
+  G.frameCount++;
+
+  var newLevel = 1 + Math.floor(G.score / 200);
+  if (newLevel !== G.level) { G.level = newLevel; updateGameHUD(); }
+  G.spawnRate = Math.max(28, 90 - G.level * 7);
+  if (G.frameCount % G.spawnRate === 0) eggSpawn();
+
+  var ctx = G.ctx;
+  var W = G.canvas.width, H = G.canvas.height;
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.clearRect(0, 0, W, H);
+  drawEggBg(ctx, W, H);
+
+  // Catch zone calibration
+  var basketHalfW = G.greg.w * 0.40;
+  var basketTop   = G.greg.y - G.greg.h * 0.13;
+  var basketBot   = G.greg.y - G.greg.h * 0.01;
+
+  for (var i = G.items.length - 1; i >= 0; i--) {
+    var it = G.items[i];
+    it.y += it.vy;
+    it.angle += it.rotSpeed;
+    var itBottom = it.y + it.h * 0.45;
+    var caught = itBottom >= basketTop && itBottom <= basketBot + 20
+              && it.x >= G.greg.x - basketHalfW
+              && it.x <= G.greg.x + basketHalfW;
+    if (caught) {
+      if (it.bad) {
+        G.lives = Math.max(0, G.lives - 1);
+        eggParticles(it.x, it.y, '#F87171', 14);
+        showToast(it.type === 'hammer' ? '🔨 Ouch! Rodrick\'s hammer!' : '💀 Eww! Cracked egg!');
+      } else {
+        G.score += it.pts;
+        eggParticles(it.x, it.y, it.type === 'rainbow' ? '#FFD700' : '#4ADE80', it.pts === 25 ? 24 : 12);
+        if (it.pts === 25) showToast('🌈 RAINBOW EGG! +25!');
+      }
+      updateGameHUD();
+      var sd = document.getElementById('game-score-display');
+      if (sd) { sd.classList.remove('score-pop'); void sd.offsetWidth; sd.classList.add('score-pop'); }
+      G.items.splice(i, 1);
+      continue;
+    }
+    if (it.y - it.h / 2 > H) { G.items.splice(i, 1); continue; }
+    drawItemSprite(ctx, it);
+  }
+
+  // Particles
+  for (var i = G.particles.length - 1; i >= 0; i--) {
+    var p = G.particles[i];
+    p.x += p.vx; p.y += p.vy; p.vy += 0.18; p.life -= p.decay;
+    if (p.life <= 0) { G.particles.splice(i, 1); continue; }
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // Greg always on top
+  drawGregSprite(ctx, G.greg.x, G.greg.y);
+
+  if (G.lives <= 0) {
+    G.running = false;
+    cancelAnimationFrame(G.animId);
+    if (G.score > G.best) {
+      G.best = G.score;
+      try { localStorage.setItem('eggCatcherBest', G.best); } catch(e) {}
+    }
+    updateGameHUD();
+    showEggOverlay(true, true, G.score);
+  }
+}
+
 
 // ============================================================
 // INIT
