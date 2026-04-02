@@ -1,4 +1,4 @@
-const CACHE_NAME = 'easter-hunt-v10';
+const CACHE_NAME = 'easter-hunt-v13';
 const ASSETS = [
   './index.html','./manifest.json','./icon-192.png','./icon-512.png',
   './gregg_main_page.jpg','./blurred_overlay.png','./greggeaster.jpg',
