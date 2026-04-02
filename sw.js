@@ -1,10 +1,8 @@
-const CACHE_NAME = 'easter-hunt-v8';
+const CACHE_NAME = 'easter-hunt-v9';
 const ASSETS = [
   './index.html','./manifest.json','./icon-192.png','./icon-512.png',
   './gregg_main_page.jpg','./blurred_overlay.png','./greggeaster.jpg',
-  './greg_with_basket.png','./egg_blue.png','./egg_orange.png',
-  './egg_purple.png','./egg_rainbow.png','./egg_cracked.png',
-  './hammer.png','./game_bg.png',
+  './game_bg.png',
   './page_1.jpg','./page_2.jpg','./page_3.jpg','./page_4.jpg',
   './page_5.jpg','./page_6.jpg','./page_7.jpg','./page_8.jpg',
   './page_9.jpg','./page_10.jpg','./page_11.jpg','./page_12.jpg',
