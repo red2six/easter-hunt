@@ -1009,7 +1009,6 @@
     justify-content: flex-start;
     background: #87CEEB;
     overflow: hidden;
-    position: relative;
   }
   #game-canvas-wrap {
     flex: 1; min-height: 0; width: 100%;
@@ -3331,19 +3330,26 @@ function initGameScreen() {
 function resizeEggCanvas() {
   var G = EGG_GAME;
   var wrap = document.getElementById('game-canvas-wrap');
-  var W = wrap.offsetWidth  || window.innerWidth;
-  var H = wrap.offsetHeight || Math.max(300, window.innerHeight - 60);
+  // getBoundingClientRect is more reliable than offsetWidth across browsers
+  var rect = wrap.getBoundingClientRect();
+  var W = rect.width  || wrap.offsetWidth  || window.innerWidth;
+  var H = rect.height || wrap.offsetHeight || Math.max(400, window.innerHeight - 60);
+  if (W < 10) W = window.innerWidth;
+  if (H < 10) H = Math.max(400, window.innerHeight - 60);
   G.canvas.width  = W;
   G.canvas.height = H;
   G.canvas.style.width  = W + 'px';
   G.canvas.style.height = H + 'px';
   G.greg.x = W / 2;
   G.greg.y = H - 8;
+  return W > 0 && H > 0;
 }
 
 function drawEggPreviewFrame() {
   var G = EGG_GAME;
-  if (!G.canvas || !G.ctx || !G.canvas.width) return;
+  if (!G.canvas || !G.ctx) return;
+  if (G.canvas.width < 10) { resizeEggCanvas(); }
+  if (!G.canvas.width) return;
   var ctx = G.ctx;
   ctx.globalAlpha = 1;
   ctx.globalCompositeOperation = 'source-over';
@@ -3429,17 +3435,12 @@ function drawGregSprite(ctx, cx, by) {
   ctx.globalAlpha = 1;
   ctx.globalCompositeOperation = 'source-over';
   if (img && img.complete && img.naturalWidth > 0) {
-    try {
-      ctx.drawImage(img, cx - w / 2, by - h, w, h);
-      G._gregDrawOk = true;
-    } catch(e) {
-      // Safari file:// taint — use CSS positioned element instead
-      G._gregDrawOk = false;
-      eggUpdateGregCSS(cx, by, w, h);
-    }
+    try { ctx.drawImage(img, cx - w / 2, by - h, w, h); } catch(e) {}
   } else {
-    ctx.fillStyle = '#222';
-    ctx.fillRect(cx - 20, by - h, 40, h);
+    // Fallback: draw simple figure while image loads
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(cx - 12, by - h + 40, 24, h - 40);
+    ctx.beginPath(); ctx.arc(cx, by - h + 24, 16, 0, Math.PI*2); ctx.fill();
   }
 }
 
