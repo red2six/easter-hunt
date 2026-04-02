@@ -1011,7 +1011,7 @@
     z-index: 50;
     font-family: "Comic Neue", cursive;
     font-weight: 900;
-    font-size: 2.5rem;
+    font-size: 3.375rem;
     color: #60A5FA;
     text-shadow: 0 0 16px #60A5FA, 0 0 32px #3B82F6, 0 0 4px #fff;
     letter-spacing: 3px;
@@ -2494,7 +2494,7 @@ const PAGES = [
   {
     id:3, bookPage:82, imageFile:'page_3.jpg',
     word:'RENEGADES', wordHint:'_ _ _ _ _ _ _ _ _ (9 letters)',
-    clue:"Rodrick's band called some clubs they'd never heard of them before. One club owner knew EXACTLY who Löded Diper was! Find the blacked-out word!",
+    clue:"Rodrick\'s band called some clubs they'd never heard of them before. One club owner knew EXACTLY who Löded Diper was! Find the blacked-out word!",
     mathQ:"2962 × 47 = ?",
     mathA:139214,
     mathHint:"Use long multiplication. Try 2962 × 40 = 118,480 then add 2962 × 7 = 20,734.",
@@ -3490,6 +3490,78 @@ function checkPin() {
     fb.style.color = 'var(--red)';
   }
 }
+
+// ============================================================
+// SOUND ENGINE — Web Audio API synthesised, no files needed
+// ============================================================
+var EGG_AUDIO = (function() {
+  var ctx = null;
+  function gc() {
+    if (!ctx) { try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){} }
+    if (ctx && ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+  function tone(freq, type, t, dur, vol) {
+    var c = gc(); if (!c) return;
+    var o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t + dur + 0.02);
+  }
+  function noise(t, dur, vol) {
+    var c = gc(); if (!c) return;
+    var len = Math.ceil(c.sampleRate * dur);
+    var buf = c.createBuffer(1, len, c.sampleRate);
+    var d = buf.getChannelData(0);
+    for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    var src = c.createBufferSource(), g = c.createGain();
+    src.buffer = buf;
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(g); g.connect(c.destination);
+    src.start(t); src.stop(t + dur + 0.02);
+  }
+  return {
+    resume: function() { gc(); },
+    catchEgg: function() {
+      var c = gc(); if (!c) return; var t = c.currentTime;
+      tone(440, 'sine', t,      0.07, 0.25);
+      tone(660, 'sine', t+0.07, 0.07, 0.25);
+      tone(880, 'sine', t+0.13, 0.10, 0.28);
+    },
+    catchRainbow: function() {
+      var c = gc(); if (!c) return; var t = c.currentTime;
+      var ns = [523,659,784,1047,1319];
+      for (var i = 0; i < ns.length; i++) tone(ns[i], 'triangle', t+i*0.07, 0.14, 0.30);
+    },
+    catchBad: function() {
+      var c = gc(); if (!c) return; var t = c.currentTime;
+      noise(t, 0.12, 0.25);
+      tone(180, 'sawtooth', t,      0.16, 0.22);
+      tone(110, 'sawtooth', t+0.10, 0.14, 0.18);
+    },
+    levelUp: function() {
+      var c = gc(); if (!c) return; var t = c.currentTime;
+      tone(392, 'triangle', t,      0.14, 0.28);
+      tone(523, 'triangle', t+0.10, 0.14, 0.28);
+      tone(659, 'triangle', t+0.20, 0.18, 0.32);
+      tone(784, 'triangle', t+0.32, 0.22, 0.38);
+    },
+    gameOver: function() {
+      var c = gc(); if (!c) return; var t = c.currentTime;
+      var o = c.createOscillator(), g = c.createGain();
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(400, t);
+      o.frequency.exponentialRampToValueAtTime(100, t + 0.9);
+      g.gain.setValueAtTime(0.30, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.95);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + 1.0);
+    }
+  };
+})();
 
 // ============================================================
 // GREG\'S CATCH — SVG GAME
@@ -4610,6 +4682,7 @@ function showEggOverlay(show, isGameOver, finalScore) {
 }
 
 function startEggGame() {
+  EGG_AUDIO.resume();
   var G = EGG_GAME;
   if (G.animId) cancelAnimationFrame(G.animId);
   resizeEggCanvas();
@@ -4714,7 +4787,7 @@ function eggGameLoop() {
   G.animId=requestAnimationFrame(eggGameLoop);
   G.frameCount++;
   var newLevel=1+Math.floor(G.score/200);
-  if(newLevel!==G.level){G.level=newLevel;updateGameHUD();showLevelPopup(newLevel);}
+  if(newLevel!==G.level){G.level=newLevel;updateGameHUD();showLevelPopup(newLevel);EGG_AUDIO.levelUp();}
   G.spawnRate=Math.max(9,36-G.level*3); // +25% more occurrences
   if(G.frameCount%G.spawnRate===0) eggSpawn();
 
@@ -4733,8 +4806,8 @@ function eggGameLoop() {
     var itBot=it.y+it.h*0.45;
     var caught=itBot>=bTop&&itBot<=bBot+28&&it.x>=G.greg.x-bHalfW&&it.x<=G.greg.x+bHalfW;
     if(caught){
-      if(it.bad){G.lives=Math.max(0,G.lives-1);eggParticles(it.x,it.y,'#F87171',14);showGamePopup(it.x,it.y,'−❤️','#F87171','#FF0000');}
-      else{G.score+=it.pts;eggParticles(it.x,it.y,it.type==='egg_rainbow'?'#FFD700':'#4ADE80',it.pts===25?24:12);if(it.pts===25)showGamePopup(it.x,it.y,'+25','#FFD700','#FF8C00');}
+      if(it.bad){G.lives=Math.max(0,G.lives-1);eggParticles(it.x,it.y,'#F87171',14);showGamePopup(it.x,it.y,'−🖤','#e2e8f0','#aaaacc');EGG_AUDIO.catchBad();}
+      else{G.score+=it.pts;eggParticles(it.x,it.y,it.type==='egg_rainbow'?'#FFD700':'#4ADE80',it.pts===25?24:12);if(it.pts===25){showGamePopup(it.x,it.y,'+25','#FFD700','#FF8C00');EGG_AUDIO.catchRainbow();}else{EGG_AUDIO.catchEgg();}}
       updateGameHUD();
       var sd=document.getElementById('game-score-display');
       if(sd){sd.classList.remove('score-pop');void sd.offsetWidth;sd.classList.add('score-pop');}
@@ -4763,7 +4836,7 @@ function eggGameLoop() {
   if(G.lives<=0){
     G.running=false; cancelAnimationFrame(G.animId);
     if(G.score>G.best){G.best=G.score;try{localStorage.setItem('eggCatcherBest',G.best);}catch(e){}}
-    updateGameHUD(); showEggOverlay(true,true,G.score);
+    updateGameHUD(); EGG_AUDIO.gameOver(); showEggOverlay(true,true,G.score);
   }
 }
 
