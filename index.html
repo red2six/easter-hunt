@@ -3280,10 +3280,6 @@ function loadEggImages(callback) {
   }
   files.forEach(function(file) {
     var img = new Image();
-    // crossOrigin needed for GitHub Pages; skip for file:// (Safari blocks it)
-    if (window.location.protocol !== 'file:') {
-      img.crossOrigin = 'anonymous';
-    }
     img.onload = onDone;
     img.onerror = onDone;
     img.src = file;
@@ -3305,7 +3301,10 @@ function initGameScreen() {
 
   // Always size canvas FIRST before anything else
   // Use setTimeout(0) to let the flex layout paint before we measure offsetWidth
-  setTimeout(function() {
+  // Double rAF ensures browser has fully painted the flex layout
+  // before we measure offsetWidth/Height — more reliable than setTimeout(0)
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
     setGameBgCSS();
     resizeEggCanvas();
     updateGameHUD();
@@ -3320,11 +3319,13 @@ function initGameScreen() {
       eggShowLoading(true);
       showEggOverlay(false, false, 0);
       loadEggImages(function() {
+        eggShowLoading(false);
         drawEggPreviewFrame();
         showEggOverlay(true, false, 0);
       });
     }
-  }, 0);
+    });
+  });
 }
 
 function resizeEggCanvas() {
@@ -3394,9 +3395,21 @@ function showEggOverlay(show, isGameOver, finalScore) {
 }
 
 function drawEggBg(ctx, W, H) {
-  // Background is handled via CSS on the canvas-wrap — just clear to transparent
-  // This avoids Safari canvas taint issues with local file:// images
+  // Canvas is transparent — CSS background-image on canvas-wrap shows through.
+  // Draw a solid sky+grass fallback in case CSS image hasn't loaded yet.
   ctx.clearRect(0, 0, W, H);
+  var bg = EGG_GAME.imgs['game_bg.png'];
+  if (bg && bg.complete && bg.naturalWidth > 0) {
+    try {
+      var scale = Math.max(W / bg.naturalWidth, H / bg.naturalHeight);
+      var dw = bg.naturalWidth * scale, dh = bg.naturalHeight * scale;
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.drawImage(bg, (W - dw) / 2, (H - dh) / 2, dw, dh);
+    } catch(e) {
+      // Tainted canvas — CSS bg already showing, nothing more needed
+    }
+  }
 }
 
 function setGameBgCSS() {
